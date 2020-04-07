@@ -1,0 +1,19 @@
+{
+  "name": "Millenium Spirit",
+  "id": "millenium-spirit",
+  "start_point": {
+    "lat": -16.45,
+    "lon": 146.2,
+    "kts": 10,
+    "depth": {
+      "min": 30,
+      "max": 36
+    }
+  },
+  "waypoints": [
+    {
+      "lat": -15.1,
+      "lon": 147.8
+    }
+  ]
+}
