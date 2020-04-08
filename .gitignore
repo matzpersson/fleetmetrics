@@ -8,6 +8,9 @@
 .env
 .data
 
+spa/node_modules
+spa/build
+
 server/node_modules
 server/build
 

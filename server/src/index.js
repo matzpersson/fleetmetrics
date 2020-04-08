@@ -4,67 +4,84 @@ import express from 'express';
 import axios from "axios";
 import * as http from 'http';
 
-var mosca = require('mosca');
+// import mosca from 'mosca';
 
-const { StringDecoder } = require('string_decoder');
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import Broker from './lib/broker';
 
-// MQTT incoming
-console.log()
-var mqttSettings = {
-  port: parseInt(process.env.MQTT_PORT)
-}
+// import Message from './models/message';
+let apiMessages = require("./routes/message");
 
-var server = new mosca.Server(mqttSettings);
+// const { StringDecoder } = require('string_decoder');
 
-server.on('ready', function(){
-  console.log(`MQTT broker ready on port ${process.env.MQTT_PORT}`);
+let app = express();
+const port = process.env.API_PORT || 8080;
+
+// app.get('/', (req, res) => res.send('Hello World with Express'));
+app.listen(port, function () {
+  console.log("Running Nmea-Visualiser on port " + port);
 });
 
-// fired when a message is received
-server.on('published', function(packet, client) {
-  const decoder = new StringDecoder('utf8');
-  const response = decoder.write(packet.payload);
+// Enable API Posts
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
 
-  // const buf = Buffer.from(packet.payload);
-  // for (const b of buf) {
-  //   console.log(b);
-  // }
-  console.log('Published',packet.topic, "Response is:", response);
-})
+// Mongoose and Mongodb connection
+console.log("SERVER", process.env.MONGO_SERVER)
+const mongo_server=process.env.MONGO_SERVER
+const mongo_db=process.env.MONGO_DATABASE
+mongoose.connect(`mongodb://${mongo_server}/${mongo_db}`, { useNewUrlParser: true, useUnifiedTopology: true});
+var db = mongoose.connection;
 
-// fired when a client connects
-server.on('clientConnected', function(client) {
-  console.log('Client Connected:', client.id);
-});
+// Check if it worked
+if(!db)
+    console.log("Error connecting db")
+else
+    console.log("Db connected successfully")
 
-// fired when a client disconnects
-server.on('clientDisconnected', function(client) {
-  console.log('Client Disconnected:', client.id);
-});
+// Define api routes
+app.use('/api', apiMessages)
 
-// Mongodb
-import MongoClient from 'mongodb';
+// Start the MQTT Broker
+const broker = new Broker();
+broker.start();
 
-// var MongoClient = require('mongodb').MongoClient;
-// var url = `mongodb://${process.env.MONGO_SERVER}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
-// var dbName = process.env.MONGO_DATABASE;
-// MongoClient.connect(url, function(err, db) {
-//   if (err) throw err;
-//   var dbo = db.db(dbName);
-//   var myobj = { name: "Company Inc", address: "Highway 37" };
-//   dbo.collection("vessels").insertOne(myobj, function(err, res) {
-//     if (err) throw err;
-//     console.log("1 document inserted here");
-//     db.close();
-//   });
-//   dbo.collection("vessels").findOne({}, function(err, result) {
-//     if (err) throw err;
-//     console.log(result.name);
-//     db.close();
-//   });
 
+
+
+// // MQTT incoming
+// var mqttSettings = {
+//   port: parseInt(process.env.MQTT_PORT)
+// }
+
+// var server = new mosca.Server(mqttSettings);
+
+// server.on('ready', function(){
+//   console.log(`MQTT broker ready on port ${process.env.MQTT_PORT}`);
 // });
 
-import NmeaMongo from './lib/nmea-mongo.js'
-const mgo = new NmeaMongo();
-mgo.load();
+// // fired when a message is received
+// server.on('published', function(packet, client) {
+//   const decoder = new StringDecoder('utf8');
+//   const response = decoder.write(packet.payload);
+
+//   console.log('Published', packet.topic, "Response is:", response);
+
+//   var message = new Message();
+//   message.topic = packet.topic;
+//   message.message = response;
+//   message.save();
+// })
+
+// // fired when a client connects
+// server.on('clientConnected', function(client) {
+//   console.log('Client Connected:', client.id);
+// });
+
+// // fired when a client disconnects
+// server.on('clientDisconnected', function(client) {
+//   console.log('Client Disconnected:', client.id);
+// });

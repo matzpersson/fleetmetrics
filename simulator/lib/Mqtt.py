@@ -3,6 +3,7 @@ import os
 import sys
 import paho.mqtt.client as mqtt
 import threading
+from datetime import datetime
 
 class MqttPublisher(threading.Thread):
     def __init__(self, logging, broker="localhost", port=1883):
@@ -27,8 +28,11 @@ class MqttPublisher(threading.Thread):
             time.sleep(10)
 
     def publish(self, topic, msg):
-        self.client.publish(topic, payload=msg, qos=1, retain=True)
-        self.logging.info("MttqPublisher sending: {} for topic: {}".format(msg, topic))
+        now = datetime.utcnow()
+        payload = "{},{}".format(now.strftime("%Y-%m-%d %H:%M:%S.%f"), msg)
+
+        self.client.publish(topic, payload=payload, qos=1, retain=True)
+        self.logging.info("MttqPublisher sending: {} for topic: {}".format(payload, topic))
 
     def on_publish(self, client, userdata, mid):
         self.logging.info("Mttq published!")
