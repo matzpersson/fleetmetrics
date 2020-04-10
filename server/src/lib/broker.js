@@ -1,13 +1,14 @@
 
 import 'dotenv/config';
 import Message from '../models/message';
+import Sanitiser from '../lib/sanitiser';
 import mosca from 'mosca';
 const { StringDecoder } = require('string_decoder');
 
 class Broker {
-  constructor() {
-    // this.url = `mongodb://${process.env.MONGO_SERVER}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
-    // this.dbName = process.env.MONGO_DATABASE;
+  constructor(io) {
+    // Set Socket-IO
+    this.io = io
   }
 
   start() {
@@ -17,22 +18,36 @@ class Broker {
     }
 
     var server = new mosca.Server(mqttSettings);
-
     server.on('ready', function(){
       console.log(`MQTT broker ready on port ${process.env.MQTT_PORT}`);
     });
+
+    const io = this.io
 
     // fired when a message is received
     server.on('published', function(packet, client) {
       const decoder = new StringDecoder('utf8');
       const response = decoder.write(packet.payload);
 
-      console.log('Published', packet.topic, "Response is:", response);
+      // console.log('Published', packet.topic, "Response is:", response);
+
+      // Write raw stream to Mongo
+      console.log("TOOPIC",packet.topic)
+      if (packet.topic.indexOf('$SYS') !== -1) {
+        return null
+      }
 
       var message = new Message();
       message.topic = packet.topic;
       message.message = response;
       message.save();
+
+      // Prettify stream and write to Mongo metrics collection
+      var sanitiser = new Sanitiser()
+      sanitiser.save(packet.topic, response);
+
+      // Broadcast to listening socket-io clients
+      io.send(packet.topic, response)
     })
 
     // fired when a client connects

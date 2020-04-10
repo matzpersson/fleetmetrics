@@ -1,27 +1,38 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
+// const socketIo = require("socket.io");
 import axios from "axios";
 import * as http from 'http';
-
-// import mosca from 'mosca';
-
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Broker from './lib/broker';
+import IO from './lib/io.js';
 
 // import Message from './models/message';
 let apiMessages = require("./routes/message");
 
-// const { StringDecoder } = require('string_decoder');
-
+// Configure Express
 let app = express();
 const port = process.env.API_PORT || 8080;
 
-// app.get('/', (req, res) => res.send('Hello World with Express'));
 app.listen(port, function () {
-  console.log("Running Nmea-Visualiser on port " + port);
+  console.log("REST Api ready on port " + port);
 });
+
+// Mongoose and Mongodb connection
+const mongo_server = process.env.MONGO_SERVER || 'localhost';
+const mongo_db = process.env.MONGO_DATABASE || 'nmea-visualiser';
+const mongo_port = process.env.MONGO_PORT || 27017;
+
+mongoose.connect(`mongodb://${mongo_server}/${mongo_db}`, { useNewUrlParser: true, useUnifiedTopology: true});
+var db = mongoose.connection;
+
+// Check Mongo connection
+if(!db)
+    console.log("Error connecting Mongo. Have you started Mongo server?");
+else
+    console.log(`MongoDb ready on ${mongo_server}:${mongo_port}/${mongo_db}`);
 
 // Enable API Posts
 app.use(bodyParser.urlencoded({
@@ -29,59 +40,13 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Mongoose and Mongodb connection
-console.log("SERVER", process.env.MONGO_SERVER)
-const mongo_server=process.env.MONGO_SERVER
-const mongo_db=process.env.MONGO_DATABASE
-mongoose.connect(`mongodb://${mongo_server}/${mongo_db}`, { useNewUrlParser: true, useUnifiedTopology: true});
-var db = mongoose.connection;
-
-// Check if it worked
-if(!db)
-    console.log("Error connecting db")
-else
-    console.log("Db connected successfully")
-
 // Define api routes
-app.use('/api', apiMessages)
+app.use('/api', apiMessages);
+
+// Configure Socket-IO
+const io = new IO(app);
+io.start();
 
 // Start the MQTT Broker
-const broker = new Broker();
+const broker = new Broker(io);
 broker.start();
-
-
-
-
-// // MQTT incoming
-// var mqttSettings = {
-//   port: parseInt(process.env.MQTT_PORT)
-// }
-
-// var server = new mosca.Server(mqttSettings);
-
-// server.on('ready', function(){
-//   console.log(`MQTT broker ready on port ${process.env.MQTT_PORT}`);
-// });
-
-// // fired when a message is received
-// server.on('published', function(packet, client) {
-//   const decoder = new StringDecoder('utf8');
-//   const response = decoder.write(packet.payload);
-
-//   console.log('Published', packet.topic, "Response is:", response);
-
-//   var message = new Message();
-//   message.topic = packet.topic;
-//   message.message = response;
-//   message.save();
-// })
-
-// // fired when a client connects
-// server.on('clientConnected', function(client) {
-//   console.log('Client Connected:', client.id);
-// });
-
-// // fired when a client disconnects
-// server.on('clientDisconnected', function(client) {
-//   console.log('Client Disconnected:', client.id);
-// });
