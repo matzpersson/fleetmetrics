@@ -51,7 +51,7 @@ class Base extends Component {
             <h4 className="text-primary m-0">FleetMetrics</h4>
           </div>
           <div className="section-header mt-3">
-            <span className="section-title text-bold text-white">MANAGE</span>
+            <span className="section-title text-bold text-light">MANAGE</span>
           </div>
           <ul className="list-group">
             <AppMenuItem url="/" caption="Dashboard" iconName="tachometer-fast" location={location}/>
@@ -59,6 +59,11 @@ class Base extends Component {
             <AppMenuItem url="/assets" caption="Assets" iconName="box" location={location} />
             <AppMenuItem url="/metrics" caption="Stream" iconName="stream" location={location} />
           </ul>
+
+          <div className="section-header mt-3">
+            <span className="section-title text-bold text-light">METRIC WATCH</span>
+          </div>
+
         </Col>
         <Col className="addScroll m-0 p-0">
           {
