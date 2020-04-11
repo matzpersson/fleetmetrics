@@ -11,6 +11,9 @@ var assetSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  models: {
+    type: Object
+  },
   sentenceType: {
     type: String,
     required: true,

@@ -32,7 +32,7 @@ class Broker {
       // console.log('Published', packet.topic, "Response is:", response);
 
       // Write raw stream to Mongo
-      console.log("TOOPIC",packet.topic)
+      // console.log("TOOPIC",packet.topic)
       if (packet.topic.indexOf('$SYS') !== -1) {
         return null
       }
@@ -44,10 +44,10 @@ class Broker {
 
       // Prettify stream and write to Mongo metrics collection
       var sanitiser = new Sanitiser()
-      sanitiser.save(packet.topic, response);
+      const metric = sanitiser.save(packet.topic, response);
 
       // Broadcast to listening socket-io clients
-      io.send(packet.topic, response)
+      io.send(packet.topic, metric)
     })
 
     // fired when a client connects

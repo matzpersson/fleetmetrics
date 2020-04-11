@@ -27,13 +27,13 @@ class IO {
   }
 
   append(socket) {
-    console.log("New client connected");
+    // console.log("New client connected");
     this.sockets.push(socket)
     console.log(`Added socket. ${this.active()}`)
   }
 
   remove(socket) {
-    console.log("Client disconnected")
+    // console.log("Client disconnected")
     const idx = (sockets) => element === socket;
     if (idx !== -1) {
       this.sockets.splice(idx, 1);

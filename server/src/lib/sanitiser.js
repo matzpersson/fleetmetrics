@@ -26,7 +26,7 @@ class Sanitiser {
       }
     })
     
-    this.create(topic, message, sentenceType)
+    return this.create(topic, message, sentenceType)
   }
 
   create(topic, message, sentenceType) {
@@ -61,6 +61,8 @@ class Sanitiser {
     metric.sentenceModel = sentenceModel;
     metric.topic = topic;
     metric.save();
+
+    return metric;
   }
 }
 
