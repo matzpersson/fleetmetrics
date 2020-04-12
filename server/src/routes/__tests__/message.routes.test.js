@@ -9,7 +9,7 @@ const request = supertest(app)
 describe('Message Router Tests', () => {
   beforeAll(async () => {
     jest.setTimeout(20000);
-    await mongoose.connect(global.__MONGO_URI__, { useNewUrlParser: true, useCreateIndex: true }, (err) => {
+    await mongoose.connect(global.__MONGO_URI__, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, (err) => {
       if (err) {
         console.error(err);
         process.exit(1);

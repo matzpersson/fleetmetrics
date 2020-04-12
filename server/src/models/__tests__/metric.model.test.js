@@ -14,7 +14,7 @@ const data = {
 describe('Metric Model Test', () => {
   // Use MongoDB Memory Server 
   beforeAll(async () => {
-    await mongoose.connect(global.__MONGO_URI__, { useNewUrlParser: true, useCreateIndex: true }, (err) => {
+    await mongoose.connect(global.__MONGO_URI__, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }, (err) => {
       if (err) {
         console.error(err);
         process.exit(1);
