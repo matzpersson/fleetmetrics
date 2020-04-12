@@ -1,24 +1,7 @@
 import 'dotenv/config';
-import cors from 'cors';
-import express from 'express';
-// const socketIo = require("socket.io");
-import axios from "axios";
-import * as http from 'http';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import Broker from './lib/broker';
-import IO from './lib/io.js';
-
-// import Message from './models/message';
-let apiMessages = require("./routes/message");
-
-// Configure Express
-let app = express();
-const port = process.env.API_PORT || 8080;
-
-app.listen(port, function () {
-  console.log("REST Api ready on port " + port);
-});
+import Broker from './services/broker';
+import IO from './services/io';
 
 // Mongoose and Mongodb connection
 const mongo_server = process.env.MONGO_SERVER || 'localhost';
@@ -34,14 +17,12 @@ if(!db)
 else
     console.log(`MongoDb ready on ${mongo_server}:${mongo_port}/${mongo_db}`);
 
-// Enable API Posts
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json());
-
-// Define api routes
-app.use('/api', apiMessages);
+// Start Api
+const app = require('./services/api');
+const port = process.env.API_PORT || 8080;
+app.listen(port, function () {
+  console.log("REST Api ready on port " + port);
+});
 
 // Configure Socket-IO
 const io = new IO(app);

@@ -1,7 +1,7 @@
 
 import 'dotenv/config';
-import Metric from '../models/metric';
-import Asset from '../models/asset';
+import Metric from '../../models/metric';
+import Asset from '../../models/asset';
 
 class Sanitiser {
   constructor() {

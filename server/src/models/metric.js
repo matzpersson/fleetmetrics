@@ -12,12 +12,12 @@ var metricSchema = mongoose.Schema({
   },
   sentenceType: {
     type: String,
-    required: true,
-    default: 'nmea0183'
+    default: 'nmea0183',
+    required: true
   },
   sentenceModel: {
     type: String,
-    required: true,
+    required: true
   },
   data: {
     type: Object,
