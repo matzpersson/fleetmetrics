@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from "react-redux";
 import Ol from "./Ol";
 
 class Fleet extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      sidePanelOpen:true
+    }
+  }
+
+
   render() {
     return (
-      <Ol />
+      <div className="h-100">
+        <Ol />
+      </div>
     )
   }
 };

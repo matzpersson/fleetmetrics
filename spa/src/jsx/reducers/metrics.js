@@ -30,14 +30,21 @@ switch (action.type) {
       rows: rows
     }
   }
-  case "FETCH_ASSETS_FULLFILLED": {
-    return {
-      ...state,
-      fetching: false,
-      fetched: true,
-      assets: action.payload
-    }
-  }
+  // case "FETCH_ASSETS_PENDING": {
+  //   return {
+  //     ...state,
+  //     fetching: true,
+  //     fetched: false
+  //   }
+  // }
+  // case "FETCH_ASSETS_FULLFILLED": {
+  //   return {
+  //     ...state,
+  //     fetching: false,
+  //     fetched: true,
+  //     // assets: action.payload
+  //   }
+  // }
 
   default: break;
 }

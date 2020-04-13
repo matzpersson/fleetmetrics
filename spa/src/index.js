@@ -12,7 +12,6 @@ library.add(fal, far);
 
 const app = document.getElementById('root');
 
-
 ReactDOM.render(<Provider store={store}>
   <App />
 </Provider>, app);

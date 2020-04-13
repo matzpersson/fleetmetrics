@@ -56,8 +56,9 @@ class Base extends Component {
           <ul className="list-group">
             <AppMenuItem url="/" caption="Dashboard" iconName="tachometer-fast" location={location}/>
             <AppMenuItem url="/fleet" caption="Fleet" iconName="chart-network" location={location} />
-            <AppMenuItem url="/assets" caption="Assets" iconName="box" location={location} />
+            <AppMenuItem url="/assets" caption="Assets" iconName="cube" location={location} />
             <AppMenuItem url="/metrics" caption="Stream" iconName="stream" location={location} />
+            <AppMenuItem url="/statistics" caption="Statistics" iconName="chart-line" location={location} />
           </ul>
 
           <div className="section-header mt-3">

@@ -38,20 +38,19 @@ exports.new = function (req, res) {
 // Handle findById
 exports.view = function (req, res) {
   Asset.findById(req.params.id, function (err, asset) {
-        if (err)
-            res.send(err);
-        res.json({
-            message: 'Success..',
-            data: asset
-        });
+    if (err)
+      res.send(err);
+    res.json({
+      message: 'Success..',
+      data: asset
     });
+  });
 };
 
 // Handle updateById
 exports.update = function (req, res) {
   Asset.findById(req.params.id, function (err, asset) {
     if (err) res.send(err);
-
     asset.key = req.body.key ? req.body.key : asset.key;
     asset.name = req.body.name;
     asset.models = req.body.models;

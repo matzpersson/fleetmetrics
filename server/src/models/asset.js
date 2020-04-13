@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+var modelSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  }
+});
+
 // Setup schema
 var assetSchema = mongoose.Schema({
   key: {
@@ -11,9 +18,7 @@ var assetSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  models: {
-    type: Object
-  },
+  models: [modelSchema],
   sentenceType: {
     type: String,
     required: true,

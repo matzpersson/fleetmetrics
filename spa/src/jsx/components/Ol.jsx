@@ -4,8 +4,9 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import Feature from 'ol/Feature';
+import {defaults as defaultControls} from 'ol/control';
 import MousePosition from 'ol/control/MousePosition';
-import {createStringXY} from 'ol/coordinate';
+import {createStringXY, format} from 'ol/coordinate';
 import XYZ from 'ol/source/XYZ';
 import {fromLonLat, transform} from 'ol/proj.js';
 import OSM, {ATTRIBUTION} from 'ol/source/OSM';
@@ -13,6 +14,8 @@ import WKT from 'ol/format/WKT';
 import Point from 'ol/geom/Point';
 import {Vector as VectorSource, Cluster} from 'ol/source';
 import {Vector as VectorLayer, Heatmap} from 'ol/layer';
+import SlidingPanel from 'react-sliding-side-panel';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import assetIcon from '../../images/asset.png';
 
@@ -25,15 +28,15 @@ import {
   Text }
 from 'ol/style';
 
-var mousePositionControl = new MousePosition({
-  coordinateFormat: createStringXY(4),
-  projection: 'EPSG:4326',
-  // comment the following two lines to have the mouse position
-  // be placed within the map.
-  className: 'custom-mouse-position',
-  target: document.getElementById('mouse-position'),
-  undefinedHTML: '&nbsp;'
-});
+// var mousePositionControl = new MousePosition({
+//   coordinateFormat: createStringXY(4),
+//   projection: 'EPSG:4326',
+//   // comment the following two lines to have the mouse position
+//   // be placed within the map.
+//   className: 'custom-mouse-position',
+//   target: document.getElementById('mouse-position'),
+//   undefinedHTML: '&nbsp;'
+// });
 
 class FleetMap extends React.Component {
   constructor() {
@@ -44,14 +47,22 @@ class FleetMap extends React.Component {
         lat: 0,
         lng: 0
       },
+      lastClick: '0,0',
       iconFeature: {},
       assetLayer: null,
-      map:{}
+      map:{},
+      sidePanelOpen:false
     }
+
+    this.toggleSidePanel = this.toggleSidePanel.bind(this);
   }
 
  componentDidMount() {
     this.renderMap(); 
+  }
+
+  toggleSidePanel() {
+    this.setState({sidePanelOpen: !this.state.sidePanelOpen})
   }
 
   getRandomColor() {
@@ -249,8 +260,20 @@ class FleetMap extends React.Component {
     var sensorLayer = this.createLayer();
     var assetLayer = this.createLayer();
 
+    var mp = new MousePosition({
+      displayProjection : "EPSG:4326",
+      // coordinateFormat: createStringXY(4),
+      coordinateFormat: function(coordinate) {
+        return format(coordinate, 'Mouse: {y}, {x}', 4);
+      },
+      projection: 'EPSG:4326',
+      className: 'custom-mouse-position',
+      target: document.getElementById('mouse-position')
+    });
+
     var map = new Map({
       target: this.refs.mapContainer,
+      // target: 'mapContainer',
       layers: [
         new TileLayer({
           source: new XYZ({
@@ -273,6 +296,7 @@ class FleetMap extends React.Component {
       })
     });
 
+    map.addControl(mp);
     map.on('click', this.handleMapClick.bind(this));
 
     this.setState({ 
@@ -285,14 +309,42 @@ class FleetMap extends React.Component {
 
   handleMapClick(event) {
     // convert coordinate to EPSG-4326
-    console.log(transform(event.coordinate, 'EPSG:3857', 'EPSG:4326'));
-    this.renderSensor()
+    const lastClickCoords = transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
+    this.setState({'lastClick': `${lastClickCoords[1].toFixed(4)}, ${lastClickCoords[0].toFixed(4)}`})
+    // this.renderSensor()
   }
 
   render() {
+    const {
+      lastClick
+    } = this.state;
+
     this.renderAssetMovement();
+
     return (
-      <div className="p-0 m-0 h-100 w-100" ref="mapContainer">
+      <div className="p-0 m-0 h-100 d-flex flex-column">
+        <div className="p-0 m-0 flex-grow-1" ref="mapContainer" id="mapContainer"></div>
+        <div className="p-2 bg-primary text-light d-flex justify-content-between" style={{fontSize: 14}}>
+          <div id="mouse-position"></div>
+
+          <div className="d-flex">
+            <FontAwesomeIcon icon={['fal', 'cube']} className={'text-white mr-3'} title="Asset configuration"/>
+            <FontAwesomeIcon icon={['fal', 'stream']} className={'text-white mr-3'} title="Sentence stream"/>
+            <FontAwesomeIcon icon={['fal', 'cog']} className={'text-white mr-3'} title="Settings" onClick={this.toggleSidePanel} />
+            <div>Click Lat/Lng: <span className="text-warning">{lastClick}</span></div>
+          </div>
+          
+        </div>
+        <SlidingPanel
+          type={'right'}
+          isOpen={this.state.sidePanelOpen}
+          size={20}
+        >
+          <div className="bg-light h-100">
+            <div>My Panel Content</div>
+            <button onClick={this.toggleSidePanel}>close</button>
+          </div>
+        </SlidingPanel>
       </div>
     );
   }

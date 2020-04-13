@@ -1,7 +1,17 @@
-
+import "babel-polyfill";
 import 'dotenv/config';
 import Metric from '../../models/metric';
 import Asset from '../../models/asset';
+
+// Saving sentenceModel list to asset
+// var Parent = mongoose.model('Parent', parentSchema);
+// var parent = new Parent({ children: [{ name: 'Matt' }, { name: 'Sarah' }] })
+// parent.children[0].name = 'Matthew';
+
+// // `parent.children[0].save()` is a no-op, it triggers middleware but
+// // does **not** actually save the subdocument. You need to save the parent
+// // doc.
+// parent.save(callback);
 
 class Sanitiser {
   constructor() {
@@ -12,17 +22,28 @@ class Sanitiser {
     let sentenceType = 'nmea0183';
 
     // Find or create the asset
-    Asset.findOne({ key: topic }, 'key sentenceType', function (err, asset) {
+    Asset.findOne({ key: topic }, 'key sentenceType models', function (err, asset) {
       if (!asset) {
         console.log(`Creating new asset for ${topic}`);
 
         var newAsset = new Asset();
         newAsset.key = topic;
         newAsset.name = topic;
+        newAsset.models = [];
         newAsset.sentenceType = sentenceType;
         newAsset.save();
+
+        asset = newAsset;
       } else {
         sentenceType = asset.sentenceType
+      }
+
+      const elements = message.split(',');
+      const sentenceModel = elements[1].substring(1).toLowerCase();
+      const model = asset.models.find(model => model.name === sentenceModel);
+      if (!model) {
+        asset.models.push({name: sentenceModel});
+        asset.save();
       }
     })
     

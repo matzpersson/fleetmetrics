@@ -1,19 +1,18 @@
 # FleetMetrics Gateway server
-FleetMetrics micro services (sort of):
-* Listening to incoming MQTT message from remote devices.
+FleetMetrics micro services listening to incoming MQTT message from remote devices.:
+* Providing MQTT message brokering.
 * Provides a Api Gateway for direct metrics delivery and for React SPA interaction.
 * Includes a Socket-IO broadcast to listening applications.
 * Incoming MTQQ sentence sanitation.
 
 ## Technology
-Developed using:
-* Express nodejs server
+* Express NodeJs server
 * Mosca Mqtt broker
 * Socket-Io broadcasting and listening
 * Mongoose MVC (MongoDb)
-* Jest and Super test testing framework providing model/routes tests with coverage report.
+* Jest and SuperTest testing framework providing model/routes testing with coverage report.
 * CI/CD by Gitlab
-* Deployment with Kubernetes.
+* Deployment using Kubernetes.
 * Development environment using Docker-compose.
 
 ## Development environment
@@ -27,5 +26,5 @@ This is a hot-loading environment reloading the browser on any change to the cod
 Package.json is configured for test:watch autoloading tests on any change:
 > npm test:watch
 
-Above command does not support test coverage reporting. Use following to see coverage:
+Above command does not support test coverage reporting. Use following to see coverage (configured in package.json):
 > npm test
