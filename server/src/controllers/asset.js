@@ -23,6 +23,7 @@ exports.new = function (req, res) {
   asset.key = req.body.key ? req.body.key : asset.key;
   asset.name = req.body.name;
   asset.models = req.body.models;
+  asset.gauges = req.body.gauges;
   asset.sentenceType = req.body.sentenceType;
 
   asset.save(function (err) {
@@ -54,6 +55,7 @@ exports.update = function (req, res) {
     asset.key = req.body.key ? req.body.key : asset.key;
     asset.name = req.body.name;
     asset.models = req.body.models;
+    asset.gauges = req.body.gauges;
     asset.sentenceType = req.body.sentenceType;
 
     asset.save(function (err) {

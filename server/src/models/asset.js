@@ -19,6 +19,10 @@ var assetSchema = mongoose.Schema({
     required: true
   },
   models: [modelSchema],
+  gauges: {
+    type: Object,
+    default: []
+  },
   sentenceType: {
     type: String,
     required: true,

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { 
   Table,
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import { fetchAssets } from '../actions'
 
 class Assets extends Component {
@@ -54,14 +55,17 @@ class Assets extends Component {
     
     let tableBodyTr = (<tr><td colSpan="5" className="p-2 text-center">No Assets found</td></tr>);
     if (rows) {
-      tableBodyTr = rows.map((asset, index) =>
-        <tr key={index} >
+      tableBodyTr = rows.map((asset, index) => {
+        const link = `/asset/${asset._id}`
+        return(
+          <tr key={index} >
           <td><FontAwesomeIcon icon={['fal', 'circle']} className={'text-success'} /></td>
           {this.renderRows(headers, asset)}
-          <td><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></td>
+          <td><Link to={link} ><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></Link></td>
           <td><FontAwesomeIcon icon={['fal', 'trash']} className={'text-danger'} /></td>
         </tr>
-      );
+        )
+      });
     }
 
     return (

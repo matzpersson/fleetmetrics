@@ -2,6 +2,7 @@ import Dashboard from '../components/Dashboard.jsx';
 import Fleet from '../components/Fleet.jsx';
 import Metrics from '../components/Metrics.jsx';
 import Assets from '../components/Assets.jsx';
+import Asset from '../components/Asset.jsx';
 import Statistics from '../components/Statistics.jsx';
 
 export const routes = [
@@ -30,6 +31,13 @@ export const routes = [
     path: "/Assets",
     component: Assets,
     title: "Assets",
+    exact: true,
+    authRequired: false
+  },
+  {
+    path: "/asset/:id",
+    component: Asset,
+    title: "Asset",
     exact: true,
     authRequired: false
   },
