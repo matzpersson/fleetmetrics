@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 
 import AssetProfileTab from "./AssetProfileTab";
-// import AssetGaugesTab from "./AssetGaugesTab";
+import AssetGaugesTab from "./AssetGaugesTab";
 
 import {
   fetchAsset,
@@ -29,12 +29,16 @@ class Asset extends React.Component {
       id: props.match.params.id,
       asset: {
         _id: null,
-      }
+      },
+      showGaugeEditor: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.toggleGaugeEditor = this.toggleGaugeEditor.bind(this);
+    this.updateGauge = this.updateGauge.bind(this);
+
     // this.onCancel = this.onCancel.bind(this);
     // this.onDelete = this.onDelete.bind(this);
     // this.editUser = this.editUser.bind(this);
@@ -108,6 +112,17 @@ class Asset extends React.Component {
     }
   }
 
+  updateGauge() {
+
+    this.toggleGaugeEditor()
+  }
+  toggleGaugeEditor() {
+    this.setState({
+      showGaugeEditor: !this.state.showGaugeEditor
+    });
+    console.log("toggle editor", this.state.showGaugeEditor)
+  }
+
   // editUser(user) {
   //   const lnk = `/home/users/${user.id}`;
   //   this.props.history.push(lnk);
@@ -126,22 +141,22 @@ class Asset extends React.Component {
     
   // }
 
-  // renderRows(headers, user) {
-  //   const iconName = "user";
-  //   const iconColour = "text-success mr-3"
-  //   const tableTd = headers.map((header, index) =>
-  //     <td key={index}>{(index === 0 ? <FontAwesomeIcon icon={['fal', iconName]} className={iconColour} /> : null)}{user[header.field]}</td>
-  //   );
+  renderGauges(headers, user) {
+    // const iconName = "user";
+    // const iconColour = "text-success mr-3"
+    // const tableTd = headers.map((header, index) =>
+    //   <td key={index}>{(index === 0 ? <FontAwesomeIcon icon={['fal', iconName]} className={iconColour} /> : null)}{user[header.field]}</td>
+    // );
 
-  //   return tableTd;
-  // }
+    // return tableTd;
+  }
 
   render() {
     const {
-      asset
+      asset,
+      showGaugeEditor
     } = this.state;
 
-    console.log(asset)
     return (
       <div className="p-3 form">
         <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">{asset.name}</h3>
@@ -166,10 +181,10 @@ class Asset extends React.Component {
         </Nav>
         <TabContent activeTab={this.state.activeTab} className="border-bottom border-primary">
           <AssetProfileTab tabId="1" asset={asset} handleChange={this.handleChange} onSave={this.onSave} onCancel={this.onCancel} />
-          {/* <UsersVerifiedTab tabId="2" users={org.users} renderRows={this.renderRows} editUser={this.editUser} /> */}
+          <AssetGaugesTab tabId="2" asset={asset} gauges={[]} renderGauges={this.renderGauges} />
         </TabContent>
       </div>
-    );     
+    );
   }
 };
 
