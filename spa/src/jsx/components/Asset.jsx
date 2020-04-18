@@ -157,6 +157,7 @@ class Asset extends React.Component {
       showGaugeEditor
     } = this.state;
 
+    const gauges = (asset.gauges ? asset.gauges : [] );
     return (
       <div className="p-3 form">
         <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">{asset.name}</h3>
@@ -181,7 +182,7 @@ class Asset extends React.Component {
         </Nav>
         <TabContent activeTab={this.state.activeTab} className="border-bottom border-primary">
           <AssetProfileTab tabId="1" asset={asset} handleChange={this.handleChange} onSave={this.onSave} onCancel={this.onCancel} />
-          <AssetGaugesTab tabId="2" asset={asset} gauges={[]} renderGauges={this.renderGauges} />
+          <AssetGaugesTab tabId="2" asset={asset} gauges={gauges} renderGauges={this.renderGauges} />
         </TabContent>
       </div>
     );

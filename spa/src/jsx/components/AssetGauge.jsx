@@ -25,9 +25,10 @@ class AssetGauge extends React.Component {
       id: props.match.params.id,
       gauge: {
         name: '',
-        modelName: null,
+        modelName: 'n/a',
         fieldName: null,
-        valueSuffix: null,
+        valueSuffix: '%',
+        gaugeType: 'number',
         value: 18,
         minValue: 0,
         maxValue: 100,
@@ -39,7 +40,7 @@ class AssetGauge extends React.Component {
     // this.onCancel = this.onCancel.bind(this);
     // this.onDelete = this.onDelete.bind(this);
     // this.editUser = this.editUser.bind(this);
-    // this.removeInvite = this.removeInvite.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
@@ -51,12 +52,11 @@ class AssetGauge extends React.Component {
   }
 
   handleChange(element){
-    const asset = this.state.asset;
-    asset[element.target.id] = element.target.value;
-
+    const gauge = this.state.gauge;
+    gauge[element.target.id] = element.target.value;
     if (element.target) {
       this.setState({
-        asset,
+        gauge,
       })
     }
   }
@@ -95,11 +95,11 @@ class AssetGauge extends React.Component {
     } = this.state;
 
     return (
-      <div className="p-3 form">
-        <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name</h3>
-        <Row className="border rounded bg-light p-2">
-          <Col>
-            <AssetRealTimeGauge />
+      <div className="m-3 form">
+        <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name: {gauge.name}</h3>
+        <Row className="border rounded bg-light m-0 p-2">
+          <Col sm={2} className="text-center">
+            <AssetRealTimeGauge gauge={gauge} />
           </Col>
           <Col>
             <FormGroup row>
@@ -107,10 +107,10 @@ class AssetGauge extends React.Component {
               <Col sm={12}>
                 <Input
                   type="text"
-                  name="roleName"
-                  id="roleName"
+                  name="name"
+                  id="name"
                   value={gauge.name}
-                  onChange={() => {}}
+                  onChange={this.handleChange}
                 >
                 </Input>
               </Col>
@@ -120,14 +120,15 @@ class AssetGauge extends React.Component {
               <Col sm={12}>
                 <Input
                   type="select"
-                  name="roleName"
-                  id="roleName"
+                  name="modelName"
+                  id="modelName"
                   value={gauge.modelName}
-                  onChange={() => {}}
+                  onChange={this.handleChange}
                 >
+                  <option value="n/a">None</option>
                   <option value="gpll">GPGLL</option>
-                  <option value="Editor">INMWI</option>
-                  <option value="Contributor">INDPT</option>
+                  <option value="inmwi">INMWI</option>
+                  <option value="indpt">INDPT</option>
                 </Input>
               </Col>
             </FormGroup>
@@ -152,10 +153,10 @@ class AssetGauge extends React.Component {
               <Col sm={12}>
                 <Input
                   type="text"
-                  name="roleName"
-                  id="roleName"
+                  name="valueSuffix"
+                  id="valueSuffix"
                   value={gauge.valueSuffix}
-                  onChange={() => {}}
+                  onChange={this.handleChange}
                 >
                 </Input>
               </Col>
@@ -168,19 +169,19 @@ class AssetGauge extends React.Component {
                 <Row>
                   <Input
                     type="text"
-                    name="roleName"
-                    id="roleName"
-                    value={'gll'}
-                    onChange={() => {}}
+                    name="minValue"
+                    id="minValue"
+                    value={gauge.minValue}
+                    onChange={this.handleChange}
                     className="col ml-3 mr-1"
                   >
                   </Input>
                   <Input
                     type="text"
-                    name="roleName"
-                    id="roleName"
-                    value={''}
-                    onChange={() => {}}
+                    name="maxValue"
+                    id="maxValue"
+                    value={gauge.maxValue}
+                    onChange={this.handleChange}
                     className="col ml-1 mr-3"
                   >
                   </Input>
@@ -193,19 +194,19 @@ class AssetGauge extends React.Component {
                 <Row>
                     <Input
                       type="text"
-                      name="roleName"
-                      id="roleName"
-                      value={'gll'}
-                      onChange={() => {}}
+                      name="minAlert"
+                      id="minAlert"
+                      value={gauge.minAlert}
+                      onChange={this.handleChange}
                       className="col ml-3 mr-1"
                     >
                     </Input>
                     <Input
                       type="text"
-                      name="roleName"
-                      id="roleName"
-                      value={''}
-                      onChange={() => {}}
+                      name="maxAlert"
+                      id="maxAlert"
+                      value={gauge.maxAlert}
+                      onChange={this.handleChange}
                       className="col ml-1 mr-3"
                     >
                     </Input>
@@ -219,14 +220,13 @@ class AssetGauge extends React.Component {
               <Col sm={12}>
                 <Input
                   type="select"
-                  name="roleName"
-                  id="roleName"
-                  value={'dial'}
-                  onChange={() => {}}
+                  name="gaugeType"
+                  id="gaugeType"
+                  value={gauge.gaugeType}
+                  onChange={this.handleChange}
                 >
                   <option value="dial">Dial</option>
-                  <option value="Editor">Slider</option>
-                  <option value="Contributor">Text Value</option>
+                  <option value="number">Number</option>
                 </Input>
               </Col>
             </FormGroup>

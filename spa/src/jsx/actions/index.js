@@ -13,6 +13,7 @@ export function putMetrics(payload) {
 export function fetchAssets() {
   return function(dispatch) {
     dispatch({type: "FETCH_ASSETS_PENDING"});
+    dispatch({type: "FETCH_GAUGES_PENDING"});
 
     // const port = process.env.API_PORT || 8081
     // const hostname = process.env.API_HOSTNAME || 'localhost'
@@ -24,6 +25,7 @@ export function fetchAssets() {
     .then((response) => {
       // const payload = {data: response.data, id: cluster.id}
       dispatch({type: "FETCH_ASSETS_FULLFILLED", payload: response.data.data});
+      dispatch({type: "FETCH_GAUGES_FULLFILLED", payload: response.data.data});
     })
     .catch((err) => {
       console.log('Error - ', err)
@@ -44,8 +46,8 @@ export function fetchAsset(id) {
       dispatch({type: "FETCH_ASSET_FULFILLED", payload: response.data.data});
     })
     .catch((err) => {
-      const responseMessage = `${err.response.data.error}`;
-      dispatch({type: "FETCH_ASSET_REJECTED", payload: responseMessage})
+      // const responseMessage = `${err.response.data.error}`;
+      // dispatch({type: "FETCH_ASSET_REJECTED", payload: responseMessage})
     })
   }
 }

@@ -104,3 +104,9 @@ html, body {
   background-color: #333333;
   border-right: 3px solid #4285f4;
 }
+
+.CircularProgressbar .CircularProgressbar-path {
+  stroke: #c73e92;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease 0s;
+}

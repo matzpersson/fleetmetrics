@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { putMetrics } from "../actions/"
 import socketIOClient from "socket.io-client";
+import AssetGaugeClass from './AssetGaugeClass';
 
 import { 
   Row,
@@ -25,6 +26,8 @@ class Base extends Component {
       response: false,
       endpoint: "http://127.0.0.1:4001"
     };
+
+    this.renderGauges = this. renderGauges.bind(this);
   }
 
   componentDidMount() {
@@ -33,15 +36,36 @@ class Base extends Component {
     socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
   }
 
+  renderGauges(asset) {
+    const gauges = this.props.gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
+    console.log("GUAUGE", asset, this.props.gauges.rows.showInMenu)
+    const realtimeGauges = gauges.map((gauge, index) =>
+      <div style={{backgroundColor: '#333333', marginBottom: 1}} >
+        <AssetGaugeClass assetGauge={gauge} gaugePanelBackground="bg-none" />
+      </div>
+    );
+    return (realtimeGauges);
+  }
+
   render() {
     const {
       match,
       location
     } = this.props;
 
-    const {
-      assets
-    } = this.props.metrics;
+    // const realtimeGauges = this.props.gauges.rows.showInMenu.map((gauge, index) =>
+    //   <div key={index} className="text-center rounded" style={{backgroundColor: '#333333'}} >
+    //     <div className="p-1 rounded" style={{backgroundColor:'#222222'}}><small>{gauge.assetName}</small></div>
+    //     <AssetGaugeClass assetGauge={gauge} gaugePanelBackground="bg-none" />
+    //   </div>
+    // );
+
+    const assetsGauges = this.props.assets.rows.map((asset, index) =>
+      <div key={index} className="text-center rounded" >
+        <div className="mt-2 p-1 rounded" style={{backgroundColor:'#222222'}}><small>{asset.name}</small></div>
+        {this.renderGauges(asset)}
+      </div>
+    )
 
     return (
       <Row className="m-0 p-0 d-flex flex-columns align-content-sm-stretch h-100">
@@ -64,6 +88,9 @@ class Base extends Component {
           <div className="section-header mt-3">
             <span className="section-title text-bold text-light">METRIC WATCH</span>
           </div>
+          <div className="m-2">
+            {assetsGauges}
+          </div>
 
         </Col>
         <Col className="addScroll m-0 p-0">
@@ -85,7 +112,9 @@ class Base extends Component {
 
 const mapStoreToProps = (store) => {
   return {
-    metrics: store.metrics
+    metrics: store.metrics,
+    gauges: store.gauges,
+    assets: store.assets
   }
 }
 
