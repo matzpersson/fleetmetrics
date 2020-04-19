@@ -5,6 +5,8 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+@import url(../../node_modules/react-grid-layout/css/styles.css);
+@import url(../../node_modules/react-resizable/css/styles.css);
 :root {
   --blue: #3490dc;
   --indigo: #6574cd;
@@ -7293,3 +7295,7 @@ html, body {
   font-weight: 700;
   border-bottom: 1px solid #4285f4;
   color: black; }
+
+.react-grid-layout-panel {
+  background-color: #eeeeee;
+  border: 1px solid #cccccc; }

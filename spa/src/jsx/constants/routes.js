@@ -1,4 +1,5 @@
 import Dashboard from '../components/Dashboard.jsx';
+import Grid from '../components/Grid.jsx';
 import Fleet from '../components/Fleet.jsx';
 import Metrics from '../components/Metrics.jsx';
 import Assets from '../components/Assets.jsx';
@@ -9,7 +10,7 @@ import Statistics from '../components/Statistics.jsx';
 export const routes = [
   {
     path: "/",
-    component: Dashboard,
+    component: Grid,
     title: "Dashboard",
     exact: true,
     authRequired: false

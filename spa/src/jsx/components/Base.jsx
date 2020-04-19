@@ -5,9 +5,11 @@ import AppFilterItem from './AppFilterItem';
 import logo from '../../images/logo.png';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { putMetrics } from "../actions/"
 import socketIOClient from "socket.io-client";
 import AssetGaugeClass from './AssetGaugeClass';
+
+import { putMetrics } from "../actions/"
+import { fetchDemoUser } from "../actions/users"
 
 import { 
   Row,
@@ -31,9 +33,12 @@ class Base extends Component {
   }
 
   componentDidMount() {
+    // Temporary demo user environment
+    this.props.dispatch(fetchDemoUser());
+
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
+    // socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
   }
 
   renderGauges(asset) {

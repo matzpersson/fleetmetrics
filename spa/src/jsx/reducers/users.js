@@ -1,0 +1,87 @@
+export default function reducer( state={
+  fetching: false,
+  fetched: false,
+  error: null,
+  defaults: {
+    dashboard: [
+      {i: "0", x: 0, y: 0, w: 2, h: 4},
+      {i: "1", x: 2, y: 0, w: 2, h: 4},
+      {i: "2", x: 4, y: 0, w: 2, h: 4},
+      {i: "3", x: 6, y: 0, w: 2, h: 4},
+      {i: "4", x: 8, y: 0, w: 2, h: 4},
+      {i: "5", x: 10, y: 0, w: 2, h: 4},
+      {i: "6", x: 0, y: 4, w: 6, h: 4},
+      {i: "7", x: 6, y: 4, w: 6, h: 4},
+      {i: "8", x: 0, y: 8, w: 12, h: 6},
+      {i: "9", x: 0, y: 14, w: 12, h: 6},
+      {i: "10", x: 0, y: 20, w: 2, h: 4},
+      {i: "11", x: 2, y: 20, w: 2, h: 4},
+      {i: "12", x: 4, y: 20, w: 2, h: 4},
+      {i: "13", x: 6, y: 20, w: 2, h: 4},
+      {i: "14", x: 8, y: 20, w: 2, h: 4},
+      {i: "15", x: 10, y: 20, w: 2, h: 4},
+    ]
+  },
+  rows: [],
+  currentUser: {},
+  authUser: {
+    dashboard: []
+  }
+}, action) {
+
+switch (action.type) {
+  case "FETCH_DEMOUSER_PENDING": {
+    return {
+      ...state,
+      fetching: true,
+      fetched: false
+    }
+  }
+  case "FETCH_DEMOUSER_FULLFILLED": {
+    const authUser = action.payload;
+    console.log("PAYLOAD", authUser)
+    if (authUser.dashboard.length === 0) {
+      authUser.dashboard = state.defaults.dashboard
+    }
+    return {
+      ...state,
+      fetching: false,
+      fetched: true,
+      authUser: authUser
+    }
+  }
+  case "FETCH_USER_PENDING": {
+    return {
+      ...state,
+      fetching: true,
+      fetched: false
+    }
+  }
+  case "FETCH_USER_FULLFILLED": {
+    return {
+      ...state,
+      fetching: false,
+      fetched: true,
+      assets: action.payload
+    }
+  }
+  case "SAVE_USER_PENDING": {
+    return {
+      ...state,
+      fetching: true,
+      fetched: false
+    }
+  }
+  case "SAVE_USER_FULLFILLED": {
+    return {
+      ...state,
+      fetching: false,
+      fetched: true,
+      assets: action.payload
+    }
+  }
+
+  default: break;
+}
+return state;
+}

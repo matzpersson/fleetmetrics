@@ -3,9 +3,11 @@ import { combineReducers } from 'redux';
 import metrics from './metrics';
 import assets from './assets';
 import gauges from './gauges';
+import users from './users';
 
 export default combineReducers({
   metrics,
   assets,
-  gauges
+  gauges,
+  users
 });

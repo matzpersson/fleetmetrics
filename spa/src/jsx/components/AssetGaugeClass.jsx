@@ -112,7 +112,7 @@ class AssetGaugeClass extends React.Component {
           <small className="m-1">{gauge.modelName}</small>
         </div>
         <div className="m-2">
-          { gauge.gaugeType == 'dial' && (
+          { gauge.gaugeType === 'dial' && (
             <CircularProgressbar 
 
               value={gauge.value}
@@ -132,7 +132,7 @@ class AssetGaugeClass extends React.Component {
               })}
             />
           )}
-          { gauge.gaugeType == 'number' && (
+          { gauge.gaugeType === 'number' && (
 
               <AnimatedNumber 
                 component="text" 
