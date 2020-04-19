@@ -12,12 +12,12 @@ import {
 } from 'reactstrap';
 
 import AssetProfileTab from "./AssetProfileTab";
-import AssetGaugesTab from "./AssetGaugesTab";
+import AssetPointsTab from "./AssetPointsTab";
 
 import {
   fetchAsset,
   updateAsset,
-} from "../actions/"
+} from "../../actions"
 
 class Asset extends React.Component {
   constructor(props) {
@@ -176,13 +176,13 @@ class Asset extends React.Component {
               className={classnames({ active: this.state.activeTab === '2' })}
               onClick={() => { this.toggle('2'); }}
             >
-              Gauges
+              Data Points
             </NavLink>
           </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab} className="border-bottom border-primary">
           <AssetProfileTab tabId="1" asset={asset} handleChange={this.handleChange} onSave={this.onSave} onCancel={this.onCancel} />
-          <AssetGaugesTab tabId="2" asset={asset} gauges={gauges} renderGauges={this.renderGauges} />
+          <AssetPointsTab tabId="2" asset={asset} gauges={gauges} renderGauges={this.renderGauges} />
         </TabContent>
       </div>
     );

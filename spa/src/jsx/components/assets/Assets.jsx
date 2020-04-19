@@ -5,7 +5,7 @@ import {
   Table,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { fetchAssets } from '../actions'
+import { fetchAssets } from '../../actions'
 
 class Assets extends Component {
   constructor(props) {

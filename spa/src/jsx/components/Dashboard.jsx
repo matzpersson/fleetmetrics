@@ -1,42 +1,69 @@
-import React, { Component } from 'react';
+import React from 'react';
+import _ from 'lodash';
+import RGL, { WidthProvider } from 'react-grid-layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import RGL, { Responsive, WidthProvider } from 'react-grid-layout';
-import GridLayout from 'react-grid-layout';
-import _ from "lodash";
+import SlidingPanel from 'react-sliding-side-panel';
+import { connect } from 'react-redux';
+import { saveUser } from '../actions/users'
+import DashboardPoints from './DashboardPoints';
+import DashboardGauge from './gauges/DashboardGauge';
 
-const ResponsiveGridLayout = WidthProvider(RGL);
+const ReactGridLayout = WidthProvider(RGL);
 
-class Dashboard extends Component {
+class Dashboard extends React.Component {
   static defaultProps = {
-    className: "layout",
-    items: 20,
+    className: 'layout',
+    items: 3,
     rowHeight: 30,
-    onLayoutChange: function() {},
+    // onLayoutChange: function() {},
     cols: 12
   };
 
   constructor(props) {
     super(props);
 
-    // const layout = {0: [0,2,3,4]}
-    const layout = [
-      {i: "1", x: 0, y: 0, w: 6, h: 4},
-      {i: "2", x: 6, y: 0, w: 6, h: 4},
-      {i: "3", x: 2, y: 2, w: 1, h: 4}
-    ];
-    // const layout = this.generateLayout();
-    this.state = { layout };
+    this.state = { 
+      layout: [],
+      sidePanelOpen: false,
+      selectedIndex: null
+    };
+    this.toggleSidePanel = this.toggleSidePanel.bind(this);
+    this.openSidePanel = this.openSidePanel.bind(this);
+    this.selectPoint = this.selectPoint.bind(this);
   }
 
-  onLayoutChange (layout) {
-    this.props.onLayoutChange(layout);
+  openSidePanel(selectedIndex) {
+    this.setState({
+      sidePanelOpen: true,
+      selectedIndex
+    })
+  }
+
+  toggleSidePanel() {
+    this.setState({sidePanelOpen: !this.state.sidePanelOpen})
+  }
+
+  selectPoint(gauge, index) {
+    const {
+      layout
+    } = this.state;
+
+    layout[index]['gid'] = gauge._id
+    console.log('picked one', gauge, index, layout[index])
+
+    this.setState({
+      layout
+    })
+
+    this.toggleSidePanel()
   }
 
   generateDOM() {
-    return _.map(_.range(this.props.items), function(i) {
+    const openSidePanel = this.openSidePanel;
+    return this.state.layout.map((cell, index) => {
       return (
-        <div key={i} className="react-grid-layout-panel">
-          <span className="text">{i}</span>
+        <div key={index} className="react-grid-layout-panel">
+          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} />
         </div>
       );
     });
@@ -55,46 +82,76 @@ class Dashboard extends Component {
       };
     });
   }
-  
+
+  onLayoutChange(layout) {
+    const {
+      authUser
+    } = this.props.users;
+
+    console.log("CHANGED layout", layout)
+    authUser.dashboard = layout
+    // this.props.dispatch(saveUser(authUser));
+  }
+
+  setLayout() {
+    const {
+      authUser
+    } = this.props.users;
+
+    if (this.state.layout !== authUser.dashboard) {
+      this.setState({
+        layout: authUser.dashboard
+      })
+    }
+  }
+
+  componentDidUpdate() {
+    this.setLayout()
+  }
+
+  componentDidMount() {
+    this.setLayout()
+  }
+
   render() {
-    // const layout = [
-    //   {i: 1, x: 0, y: 0, w: 6, h: 4},
-    //   {i: 2, x: 6, y: 0, w: 6, h: 4},
-    //   {i: 3, x: 2, y: 2, w: 1, h: 4}
-    // ];
-
-    const layout = {0: [0,2,3,4]}
-
-    const layouts = {lg: layout};
-    const breakpoints = {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0};
-    const cols = {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2};
+    const {
+      rows
+    } = this.props.assets;
 
     return (
       <div className="p-4 text-center">
-        <FontAwesomeIcon icon={['fal','grip-horizontal']} className="mt-5 text-danger mb-3" size="4x" />
+        <FontAwesomeIcon icon={['fal','grip-horizontal']} className="mt-5 text-primary mb-3" size="4x" />
         <h1>FleetMetrics Dashboard</h1>
-
-        <ResponsiveGridLayout 
-          className="layout"
-          layouts={layouts}
-          onLayoutChange={this.onLayoutChange}
+        <ReactGridLayout
+          layout={this.state.layout}
+          onLayoutChange={(layout) => this.onLayoutChange(layout)}
           {...this.props}
-          >
-          {/* {this.generateDOM()} */}
-          <div key={1} className="react-grid-layout-panel">
-            <span className="text">{1}</span>
+        >
+          {this.generateDOM()}
+        </ReactGridLayout>
+        <SlidingPanel
+          type={'right'}
+          isOpen={this.state.sidePanelOpen}
+          size={20}
+        >
+          <div className="bg-white h-100">
+            <div className="d-flex justify-content-between p-2">
+              <span>Select Datapoint...</span>
+              <FontAwesomeIcon icon={['fal', 'backspace']} className={'text-danger mr-2'} onClick={this.toggleSidePanel}/>
+            </div>
+            <DashboardPoints toggleSidePanel={this.toggleSidePanel} assets={rows} selectPoint={this.selectPoint} selectedIndex={this.state.selectedIndex} />
           </div>
-          <div key={2} className="react-grid-layout-panel">
-            <span className="text">{2}</span>
-          </div>
-          <div key={3} className="react-grid-layout-panel">
-            <span className="text">{3}</span>
-          </div>
-        </ResponsiveGridLayout>
+        </SlidingPanel>
       </div>
     );
   }
 }
 
-export default Dashboard;
+const mapStoreToProps = (store) => {
+  return {
+    users: store.users,
+    assets: store.assets
+  }
+}
 
+export default connect(mapStoreToProps)(Dashboard);

@@ -1,16 +1,16 @@
 import Dashboard from '../components/Dashboard.jsx';
-import Grid from '../components/Grid.jsx';
+// import Grid from '../components/Grid.jsx';
 import Fleet from '../components/Fleet.jsx';
 import Metrics from '../components/Metrics.jsx';
-import Assets from '../components/Assets.jsx';
-import Asset from '../components/Asset.jsx';
-import AssetGauge from '../components/AssetGauge.jsx';
+import Assets from '../components/assets/Assets.jsx';
+import Asset from '../components/assets/Asset.jsx';
+import AssetPoint from '../components/assets/AssetPoint.jsx';
 import Statistics from '../components/Statistics.jsx';
 
 export const routes = [
   {
     path: "/",
-    component: Grid,
+    component: Dashboard,
     title: "Dashboard",
     exact: true,
     authRequired: false
@@ -44,8 +44,8 @@ export const routes = [
     authRequired: false
   },
   {
-    path: "/asset/:id/gauges/:id",
-    component: AssetGauge,
+    path: "/asset/:id/points/:id",
+    component: AssetPoint,
     title: "AssetGauge",
     exact: true,
     authRequired: false

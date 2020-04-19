@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 
-const AssetGaugesTab = (props) => {
+const AssetPointsTab = (props) => {
   const {
     gauges,
     asset,
@@ -70,7 +70,7 @@ const AssetGaugesTab = (props) => {
     </tr>)
   });
 
-  const newLink = `/asset/${asset._id}/gauges/new`
+  const newLink = `/asset/${asset._id}/points/new`
   return (
     <React.Fragment>
       <TabPane tabId={tabId} className="mb-2 p-3">
@@ -105,4 +105,4 @@ const AssetGaugesTab = (props) => {
   );
 }
 
-export default AssetGaugesTab;
+export default AssetPointsTab;

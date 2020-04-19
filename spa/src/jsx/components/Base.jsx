@@ -6,10 +6,11 @@ import logo from '../../images/logo.png';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import socketIOClient from "socket.io-client";
-import AssetGaugeClass from './AssetGaugeClass';
+import AssetGaugeClass from './assets/AssetGaugeClass';
 
 import { putMetrics } from "../actions/"
 import { fetchDemoUser } from "../actions/users"
+import { fetchAssets } from '../actions'
 
 import { 
   Row,
@@ -35,6 +36,9 @@ class Base extends Component {
   componentDidMount() {
     // Temporary demo user environment
     this.props.dispatch(fetchDemoUser());
+
+    // Fetch assets
+    this.props.dispatch(fetchAssets());
 
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);

@@ -15,7 +15,7 @@ import {
   Input
 } from 'reactstrap';
 
-class AssetGauge extends React.Component {
+class AssetPoint extends React.Component {
   constructor(props) {
     super(props)
 
@@ -264,4 +264,4 @@ const mapStoreToProps = (store) => {
   }
 }
 
-export default connect(mapStoreToProps)(AssetGauge);
+export default connect(mapStoreToProps)(AssetPoint);

@@ -59,7 +59,7 @@ class BasicLayout extends React.Component {
       return (
         <div key={i} className="react-grid-layout-panel">
           <span className="text">
-            <FontAwesomeIcon icon={['fal','plus']} className="mt-5 text-primary mb-3" size="4x" onClick={toggleSidePanel}/>
+            <FontAwesomeIcon icon={['fal','plus']} className="mt-5 text-secondary mb-3" size="4x" onClick={toggleSidePanel}/>
           </span>
         </div>
       );
