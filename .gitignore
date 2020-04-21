@@ -10,6 +10,8 @@
 
 spa/node_modules
 spa/build
+spa/.env
+spa/.npmrc
 
 server/node_modules
 server/build
