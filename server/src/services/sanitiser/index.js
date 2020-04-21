@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import 'dotenv/config';
-import Metric from '../../models/metric';
-import Asset from '../../models/asset';
+import Metric from '../api/models/metric';
+import Asset from '../api/models/asset';
 
 // Saving sentenceModel list to asset
 // var Parent = mongoose.model('Parent', parentSchema);

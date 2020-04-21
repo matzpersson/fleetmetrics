@@ -1,6 +1,6 @@
 
 import 'dotenv/config';
-import Message from '../../models/message';
+import Message from '../api/models/message';
 import Sanitiser from '../sanitiser';
 import mosca from 'mosca';
 const { StringDecoder } = require('string_decoder');
