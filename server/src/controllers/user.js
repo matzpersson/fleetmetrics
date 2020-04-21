@@ -59,6 +59,7 @@ exports.update = function (req, res) {
     user.dashboard = req.body.dashboard;
 
     user.save(function (err) {
+      console.log("USER", user, err)
         if (err)
             res.json(err);
         res.json({

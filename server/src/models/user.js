@@ -25,7 +25,7 @@ var userSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+}, { versionKey: false });
 
 // Export Contact model
 var User = module.exports = mongoose.model('users', userSchema);

@@ -20,6 +20,7 @@
     "react": "^16.13.1",
     "react-animated-number": "^0.4.4",
     "react-circular-progressbar": "^2.0.3",
+    "react-compass": "^0.1.0",
     "react-dom": "^16.13.1",
     "react-epic-spinners": "^0.4.1",
     "react-grid-layout": "^0.18.3",

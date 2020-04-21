@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from "react-redux";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import AnimatedNumber from 'react-animated-number';
+import GaugeProgress from './GaugeProgress';
+import GaugeNumber from './GaugeNumber';
 
 class AssetGaugeClass extends React.Component {
   constructor(props) {
@@ -9,6 +11,7 @@ class AssetGaugeClass extends React.Component {
 
     this.state = {
       assetKey: null,
+      assetName: null,
       gauge: {
         name: '',
         textValue: '',
@@ -21,15 +24,13 @@ class AssetGaugeClass extends React.Component {
         maxValue: 100,
         minAlert: 30,
         maxAlert: 80,
-        alertMessage: null
+        alertMessage: null,
+        gaugeColour: '#4285f4',
+        gaugePanel: 'bg-primary'
       }
     };
 
-    this.prettyString = this.prettyString.bind(this);
-  }
-
-  prettyString(n) {
-    return this.state.gauge.textValue;
+    this.selectGauge = this.selectGauge.bind(this);
   }
 
   componentDidMount() {
@@ -37,33 +38,39 @@ class AssetGaugeClass extends React.Component {
       assetGauge
     } = this.props;
 
+    console.log("ASSET GAUGE", assetGauge)
     const gauge = assetGauge.gauge;
     const assetKey = assetGauge.assetKey;
+    const assetName = assetGauge.assetName;
+
+    if (this.props.gaugePanelBackground) {
+      gauge.gaugePanel = this.props.gaugePanelBackground
+    }
 
     gauge.value = 0;
     this.setGauge(gauge);
 
     this.setState({
-      assetKey
+      assetKey,
+      assetName,
     })
   }
 
   setGauge(gauge){
     gauge.textValue = `${gauge.value.toFixed(gauge.decimals)}${gauge.valueSuffix}`;
+    // gauge.gaugeColour = '#4285f4';
+    // gauge.gaugePanel = 'bg-primary';
 
-    // let gaugeColour = '#4285f4';
-    gauge.gaugeColour = '#4285f4';
-    gauge.gaugePanel = 'bg-primary'
-  
-    if (this.props.gaugePanelBackground) {
-      gauge.gaugePanel = this.props.gaugePanelBackground
-    }
+    // console.log("SET GAUGE", this.props.origin, this.props.gaugePanelBackground);
+    // if (this.props.gaugePanelBackground) {
+    //   gauge.gaugePanel = this.props.gaugePanelBackground
+    // }
 
     if (gauge.minAlert > gauge.value) {
       gauge.alertMessage = 'Alert - value is too LOW';
       gauge.gaugeColour = '#ea4335';
       gauge.gaugePanel = 'bg-danger';
-    }
+    } 
 
     if (gauge.maxAlert < gauge.value) {
       gauge.alertMessage = 'Alert - value is too HIGH';
@@ -71,10 +78,23 @@ class AssetGaugeClass extends React.Component {
       gauge.gaugePanel = 'bg-danger';
     }
 
-    console.log("SET GAUGE")
     this.setState({
       gauge
     })
+  }
+
+  selectGauge(type) {
+    const {
+      gauge
+    } = this.state;
+
+    switch (type) {
+      case 'dial':
+        return (<GaugeProgress gauge={gauge} />);
+      case 'number':
+        return (<GaugeNumber gauge={gauge} />);
+      default: break;
+    }
   }
 
   componentDidUpdate() {
@@ -98,61 +118,21 @@ class AssetGaugeClass extends React.Component {
 
   render() {
     const {
-      gauge
+      gauge,
+      assetName
     } = this.state;
 
-    const gaugeMainPanelClass = `d-flex justify-content-center flex-column`
-    const gaugeTitlePanelClass = `d-flex justify-content-between p-1 ${gauge.gaugePanel} text-white border-bottom border-secondary`
+    const gaugeMainPanelClass = `d-flex justify-content-center flex-column`;
+    const gaugeTitlePanelClass = `d-flex justify-content-between p-1 ${gauge.gaugePanel} text-white border-bottom border-secondary`;
 
     return (
       <div className={gaugeMainPanelClass}>
         <div className={gaugeTitlePanelClass}>
           <span>{gauge.name}</span>
-          {/* <div style={{width: 10, height: 10, borderRadius: 5, backgroundColor: '#34a853'}}></div> */}
-          <small className="m-1">{gauge.modelName}</small>
+          <small className="m-1">{assetName}</small>
         </div>
         <div className="m-2">
-          { gauge.gaugeType === 'dial' && (
-            <CircularProgressbar 
-
-              value={gauge.value}
-              // text={textValue}
-              text={<tspan dx={-20}>{gauge.textValue}</tspan>}
-              maxValue={gauge.maxValue}
-              circleRatio={0.75}
-              styles={buildStyles({
-                rotation: 1 / 2 + 1 / 8,
-                strokeLinecap: 'butt',
-                pathTransitionDuration: 1.5,
-                textTransitionDuration: 1.5,
-                trailColor: '#cccccc',
-                pathColor: '#4285f4',
-                textColor: '#4285f4',
-                textSize: '24px'
-              })}
-            />
-          )}
-          { gauge.gaugeType === 'number' && (
-
-              <AnimatedNumber 
-                component="text" 
-                value={gauge.value}
-                initialValue={0}
-                style={{
-                    transition: '0.8s ease-out',
-                    fontSize: 48,
-                    color: gauge.gaugeColour,
-                    transitionProperty:
-                        'background-color, color, opacity'
-                }}
-                className=""
-                frameStyle={perc => (
-                    perc === 100 ? {} : {backgroundColor: '#ffeb3b'}
-                )}
-                duration={300}
-                formatValue={n => this.prettyString(n)}
-              />
-          )}
+          {this.selectGauge(gauge.gaugeType)}
         </div>
         { gauge.alertMessage && (
           <small className="text-danger" >{gauge.alertMessage}</small>
@@ -170,4 +150,3 @@ const mapStoreToProps = (store) => {
 }
 
 export default connect(mapStoreToProps)(AssetGaugeClass);
-

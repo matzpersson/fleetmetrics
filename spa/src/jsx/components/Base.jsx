@@ -6,7 +6,7 @@ import logo from '../../images/logo.png';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import socketIOClient from "socket.io-client";
-import AssetGaugeClass from './assets/AssetGaugeClass';
+import AssetGaugeClass from './gauges/AssetGaugeClass';
 
 import { putMetrics } from "../actions/"
 import { fetchDemoUser } from "../actions/users"
@@ -47,9 +47,8 @@ class Base extends Component {
 
   renderGauges(asset) {
     const gauges = this.props.gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
-    console.log("GUAUGE", asset, this.props.gauges.rows.showInMenu)
     const realtimeGauges = gauges.map((gauge, index) =>
-      <div style={{backgroundColor: '#333333', marginBottom: 1}} >
+      <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
         <AssetGaugeClass assetGauge={gauge} gaugePanelBackground="bg-none" />
       </div>
     );
@@ -61,13 +60,6 @@ class Base extends Component {
       match,
       location
     } = this.props;
-
-    // const realtimeGauges = this.props.gauges.rows.showInMenu.map((gauge, index) =>
-    //   <div key={index} className="text-center rounded" style={{backgroundColor: '#333333'}} >
-    //     <div className="p-1 rounded" style={{backgroundColor:'#222222'}}><small>{gauge.assetName}</small></div>
-    //     <AssetGaugeClass assetGauge={gauge} gaugePanelBackground="bg-none" />
-    //   </div>
-    // );
 
     const assetsGauges = this.props.assets.rows.map((asset, index) =>
       <div key={index} className="text-center rounded" >

@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 import { saveUser } from '../actions/users'
 import DashboardPoints from './DashboardPoints';
 import DashboardGauge from './gauges/DashboardGauge';
+import { 
+  Button
+} from 'reactstrap';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -15,6 +18,12 @@ class Dashboard extends React.Component {
     className: 'layout',
     items: 3,
     rowHeight: 30,
+    isDraggagle: true,
+    isResizable: true,
+    maxH: 12,
+    maxW: 12,
+    minH: 1,
+    minW: 1,
     // onLayoutChange: function() {},
     cols: 12
   };
@@ -25,7 +34,8 @@ class Dashboard extends React.Component {
     this.state = { 
       layout: [],
       sidePanelOpen: false,
-      selectedIndex: null
+      selectedIndex: null,
+      gaugeList: []
     };
     this.toggleSidePanel = this.toggleSidePanel.bind(this);
     this.openSidePanel = this.openSidePanel.bind(this);
@@ -45,7 +55,8 @@ class Dashboard extends React.Component {
 
   selectPoint(gauge, index) {
     const {
-      layout
+      layout,
+      gaugeList
     } = this.state;
 
     layout[index]['gid'] = gauge._id
@@ -63,7 +74,7 @@ class Dashboard extends React.Component {
     return this.state.layout.map((cell, index) => {
       return (
         <div key={index} className="react-grid-layout-panel">
-          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} />
+          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} assets={this.props.assets.rows} />
         </div>
       );
     });
@@ -83,13 +94,34 @@ class Dashboard extends React.Component {
     });
   }
 
-  onLayoutChange(layout) {
+  onLayoutChange(newLayout) {
+    console.log("UPDATING LAYOUT")
     const {
-      authUser
+      authUser,
     } = this.props.users;
 
-    console.log("CHANGED layout", layout)
-    authUser.dashboard = layout
+    const dashboard = newLayout.map((cell, index) => {
+      cell.gid = this.state.layout[index].gid;
+      return cell;
+    })
+
+    console.log("CHANGED layout", dashboard, newLayout)
+    authUser.dashboard = dashboard
+    this.props.dispatch(saveUser(authUser));
+  }
+
+  saveLayout() {
+    // const {
+    //   authUser,
+    // } = this.props.users;
+
+    // const dashboard = newLayout.map((cell, index) => {
+    //   cell.gid = this.state.layout[index].gid;
+    //   return cell;
+    // })
+
+    // console.log("CHANGED layout", this.state.layout, newLayout)
+    // authUser.dashboard = newLayout
     // this.props.dispatch(saveUser(authUser));
   }
 
@@ -122,6 +154,8 @@ class Dashboard extends React.Component {
       <div className="p-4 text-center">
         <FontAwesomeIcon icon={['fal','grip-horizontal']} className="mt-5 text-primary mb-3" size="4x" />
         <h1>FleetMetrics Dashboard</h1>
+        {/* <Button onClick={this.saveLayout()}>Save Changes</Button> */}
+
         <ReactGridLayout
           layout={this.state.layout}
           onLayoutChange={(layout) => this.onLayoutChange(layout)}
