@@ -1,20 +1,16 @@
-# FROM node:10
-FROM node:13.12.0-alpine
+FROM node:10-alpine
+ARG FONTAWESOME_TOKEN
 
-# set working directory
+# FROM node:13.12.0-alpine
+
 WORKDIR /app
+COPY ./spa/package.json ./
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+RUN npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+RUN npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_TOKEN
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install
-RUN npm install react-scripts@3.4.1 -g
+RUN npm install --silent
 
-# add app
-COPY . ./
+COPY ./spa ./
 
-# start app
 CMD ["npm", "start"]

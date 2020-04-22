@@ -1,9 +1,66 @@
 version: '3.3'
+
+networks:
+  app-tier:
+    driver: bridge
+
 services:
   mongodb:
     image: 'mongo:latest'
-    container_name: 'nmea-visualiser'
+    container_name: 'fleetmetrics-mgo'
     volumes:
       - ./.data/mongo:/data/db
     ports:
       - '27017:27017'
+    networks:
+      - app-tier
+  gateway:
+    container_name: fleetmetrics-gateway
+    build: 
+      context: .
+      dockerfile: ./server/Dockerfile
+    environment:
+      MQTT_PORT: ${GATEWAY_MQTT_PORT}
+      MONGO_PORT: ${GATEWAY_MONGO_PORT}
+      MONGO_SERVER: ${GATEWAY_MONGO_SERVER}
+      MONGO_DATABASE: ${GATEWAY_MONGO_DATABASE}
+      API_PORT: ${GATEWAY_API_PORT}
+    ports:
+      - '${GATEWAY_MQTT_PORT}:${GATEWAY_MQTT_PORT}'
+      - '8081:8081'
+    volumes:
+      - ./server/:/app
+    depends_on:
+      - mongodb
+    networks:
+      - app-tier
+  spa:
+    container_name: fleetmetrics-spa
+    build: 
+      context: .
+      dockerfile: ./spa/Dockerfile
+      args:
+        FONTAWESOME_TOKEN: ${FONTAWESOME_TOKEN}
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./spa/src:/app/src
+      - ./spa/public:/app/public
+    depends_on:
+      - gateway
+    networks:
+      - app-tier
+  simulator:
+    container_name: fleetmetrics-simulator
+    build: 
+      context: .
+      dockerfile: ./simulator/Dockerfile
+    environment:
+      MQTT_PORT: ${GATEWAY_MQTT_PORT}
+      MQTT_HOST: gateway
+    volumes:
+      - ./simulator/:/app
+    depends_on:
+      - gateway
+    networks:
+      - app-tier

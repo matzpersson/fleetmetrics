@@ -12,10 +12,9 @@ import os
 sys.path.append('./lib/')
 sys.path.append('./devices/')
 
-import random
+# import random
 
 from Mqtt import MqttPublisher
-
 from Vessel import Vessel
 
 # Start logging
@@ -25,8 +24,11 @@ logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 logging.info("Starting Nmea 0183 Simulator...")
 
 # MQTT Connection
-logging.info("Init MqttPublisher...")
-mqtt_publisher = MqttPublisher(logging)
+mqtt_host = os.getenv('MQTT_HOST') if os.getenv('MQTT_HOST') else 'localhost'
+mqtt_port = os.getenv('MQTT_PORT') if os.getenv('MQTT_PORT') else 1883
+
+logging.info("Starting MQTT client on {}:{}".format(mqtt_host, mqtt_port))
+mqtt_publisher = MqttPublisher(logging, mqtt_host, mqtt_host)
 mqtt_publisher.start()
 
 # Vessels
@@ -41,10 +43,4 @@ for filename in os.listdir("./vessels"):
 
 
 while True:
-    i = input()
-    if i == 'p':
-        tempValue = random.randrange(0, 101, 2)
-        temperature = "Temperature is {}".format(tempValue)
-        mqtt_publisher.publish("the topic", temperature)
-
     time.sleep(1)

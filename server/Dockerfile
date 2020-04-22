@@ -1,19 +1,12 @@
-FROM node:10
+FROM node:10-alpine
 # FROM node:13.12.0-alpine
 
-# set working directory
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+COPY ./server/package.json ./
+COPY ./server/package-lock.json ./
+RUN npm install --silent
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install
+COPY ./server ./
 
-# add app
-COPY . ./
-
-# start app
 CMD ["npm", "start"]
