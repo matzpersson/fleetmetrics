@@ -35,6 +35,8 @@ export function createDemoUser() {
       dashboard: []
     }
 
+    console.log("ASSETS", userUrl)
+
     axios({
       method: 'POST',
       url: userUrl,

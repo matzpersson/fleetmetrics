@@ -19,11 +19,13 @@ class MqttPublisher(threading.Thread):
     def run(self):
         while True:
             try:
-                self.logging.info("Attempting to connect to MttqPublisher")
+                self.logging.info("Attempting to connect to MttqPublisher on {}:{}".format(self.broker, self.port))
                 self.client.connect(self.broker, self.port)
                 self.client.loop_start()
-            except Exception:
-                self.logging.info("... Failed to connect. Try again in 10s")
+            except OSError as err:
+                print("OS error: {0}".format(err))
+            except Exception as err:
+                self.logging.info("... Failed to connect. Try again in 10s {0}".format(err))
 
             time.sleep(10)
 

@@ -15,9 +15,7 @@ export function fetchAssets() {
     dispatch({type: "FETCH_ASSETS_PENDING"});
     dispatch({type: "FETCH_GAUGES_PENDING"});
 
-    // const port = process.env.API_PORT || 8081
-    // const hostname = process.env.API_HOSTNAME || 'localhost'
-    // const url = `http://${hostname}:${port}/api/assets`
+    console.log("ASSETS", assetUrl)
     axios({
       method: 'GET',
       url: assetUrl,

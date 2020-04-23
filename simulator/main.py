@@ -25,10 +25,10 @@ logging.info("Starting Nmea 0183 Simulator...")
 
 # MQTT Connection
 mqtt_host = os.getenv('MQTT_HOST') if os.getenv('MQTT_HOST') else 'localhost'
-mqtt_port = os.getenv('MQTT_PORT') if os.getenv('MQTT_PORT') else 1883
+mqtt_port = int(os.getenv('MQTT_PORT')) if os.getenv('MQTT_PORT') else 1883
 
 logging.info("Starting MQTT client on {}:{}".format(mqtt_host, mqtt_port))
-mqtt_publisher = MqttPublisher(logging, mqtt_host, mqtt_host)
+mqtt_publisher = MqttPublisher(logging, mqtt_host, mqtt_port)
 mqtt_publisher.start()
 
 # Vessels

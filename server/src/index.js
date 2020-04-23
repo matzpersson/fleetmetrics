@@ -5,7 +5,7 @@ import IO from './services/io';
 
 // Mongoose and Mongodb connection
 const mongo_server = process.env.MONGO_SERVER || 'localhost';
-const mongo_db = process.env.MONGO_DATABASE || 'nmea-visualiser';
+const mongo_db = process.env.MONGO_DATABASE || 'fleetmetrics';
 const mongo_port = process.env.MONGO_PORT || 27017;
 
 mongoose.connect(`mongodb://${mongo_server}/${mongo_db}`, { useNewUrlParser: true, useUnifiedTopology: true});

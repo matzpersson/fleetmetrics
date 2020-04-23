@@ -1,0 +1,2 @@
+# Simulator Services
+All Simulator services goes in here. Follow template script to create your own simulator, drop it in this directory and the main application script will pick it up and start sending.

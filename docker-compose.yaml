@@ -24,10 +24,12 @@ services:
       MONGO_PORT: ${GATEWAY_MONGO_PORT}
       MONGO_SERVER: ${GATEWAY_MONGO_SERVER}
       MONGO_DATABASE: ${GATEWAY_MONGO_DATABASE}
+      IO_PORT: ${GATEWAY_IO_PORT}
       API_PORT: ${GATEWAY_API_PORT}
     ports:
       - '${GATEWAY_MQTT_PORT}:${GATEWAY_MQTT_PORT}'
-      - '8081:8081'
+      - '${GATEWAY_API_PORT}:${GATEWAY_API_PORT}'
+      - '${GATEWAY_IO_PORT}:${GATEWAY_IO_PORT}'
     volumes:
       - ./server/:/app
     depends_on:
@@ -41,8 +43,14 @@ services:
       dockerfile: ./spa/Dockerfile
       args:
         FONTAWESOME_TOKEN: ${FONTAWESOME_TOKEN}
+        PORT: ${SPA_PORT}
     ports:
-      - '3000:3000'
+      - '${SPA_PORT}:${SPA_PORT}'
+    environment:
+      REACT_APP_GATEWAY_IO_HOST: localhost
+      REACT_APP_GATEWAY_IO_PORT: ${GATEWAY_IO_PORT}
+      REACT_APP_GATEWAY_API_HOST: localhost
+      REACT_APP_GATEWAY_API_PORT: ${GATEWAY_API_PORT}
     volumes:
       - ./spa/src:/app/src
       - ./spa/public:/app/public

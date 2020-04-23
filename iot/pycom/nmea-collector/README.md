@@ -1,0 +1,2 @@
+# NMEA 0183 Collector
+Built using PyCom GPY chip and developed in MicroPython in a custom enclosure, it is compatible with NMEA 0183 protocol and can be connected on any NMEA 0183 network popular common in marine vessels and vehicles.

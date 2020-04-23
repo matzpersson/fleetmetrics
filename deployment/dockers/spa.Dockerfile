@@ -2,8 +2,6 @@ FROM node:10-alpine
 ARG FONTAWESOME_TOKEN
 ARG PORT
 
-# FROM node:13.12.0-alpine
-
 WORKDIR /app
 COPY ./spa/package.json ./
 
@@ -12,11 +10,11 @@ RUN npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_TOKEN
 
 RUN npm install --silent
 
-COPY ./spa ./
+COPY ./spa/public ./public
+COPY ./spa/src ./src
 
 RUN npm install -g serve
 
 RUN npm run-script build
 
-# CMD ["npm", "start"]
 CMD ["serve", "-s", "build", "-l", "3000"]

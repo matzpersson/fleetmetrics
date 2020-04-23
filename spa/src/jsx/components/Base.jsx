@@ -25,9 +25,14 @@ class Base extends Component {
   constructor(props) {
     super(props)
 
+    const REACT_APP_GATEWAY_IO_HOST = process.env.REACT_APP_GATEWAY_IO_HOST
+    const REACT_APP_GATEWAY_IO_PORT = process.env.REACT_APP_GATEWAY_IO_PORT
+    const endpoint = `http://${REACT_APP_GATEWAY_IO_HOST}:${REACT_APP_GATEWAY_IO_PORT}`
+
+    console.log("IO ENDPOINT", endpoint)
     this.state = {
       response: false,
-      endpoint: "http://127.0.0.1:4001"
+      endpoint: endpoint
     };
 
     this.renderGauges = this. renderGauges.bind(this);
@@ -42,7 +47,7 @@ class Base extends Component {
 
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    // socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
+    socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
   }
 
   renderGauges(asset) {
