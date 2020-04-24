@@ -10,6 +10,7 @@ import geopy
 import json
 import random
 from geopy.distance import geodesic
+from geopy.distance import distance as geopy_distance
 
 class Gps(threading.Thread):
     def __init__(self, logging, vessel, mqtt_publisher):
@@ -27,9 +28,11 @@ class Gps(threading.Thread):
         self.logging.info("Running Gps..")
 
         nm2km = 1.852
+        idx = 0
 
         self.current_position = self.vessel["start_point"]
-        self.next_waypoint = self.vessel["waypoints"][0]
+        self.next_waypoint = self.vessel["waypoints"][idx]
+
         while True:
             # Coordinates
             lat1 = self.current_position["lat"]
@@ -57,6 +60,19 @@ class Gps(threading.Thread):
 
             self.current_position["lat"] = destination.latitude
             self.current_position["lon"] = destination.longitude
+
+            # Work out how close to waypoint we are.
+            distanceToWaypoint = geopy_distance(geopy.Point(self.current_position["lat"], self.current_position["lon"]), geopy.Point(lat2, lon2)).miles
+            if distanceToWaypoint < 1:
+                if idx == (len(self.vessel["waypoints"]) - 1):
+                    idx = 0
+                else:
+                    idx +=1
+
+                self.current_position = self.next_waypoint
+                self.next_waypoint = self.vessel["waypoints"][idx]
+
+            print("DISTANCE", distanceToWaypoint)
 
             time.sleep(self.random_sleep)
 
