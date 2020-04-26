@@ -58,6 +58,10 @@ class Gps(threading.Thread):
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
 
+            msg = self.vhw(bearing, kts)
+            self.logging.info("{}{}".format(self.log_prefix, msg))
+            self.mqtt_publisher.publish(self.vessel["id"], msg)
+
             self.current_position["lat"] = destination.latitude
             self.current_position["lon"] = destination.longitude
 
@@ -82,6 +86,13 @@ class Gps(threading.Thread):
 
         prefix = "HDT"
         return "${}{},{},T*03".format(self.talkerid, prefix, heading)
+
+    def vhw(self, kts, bearing):
+        # Using bearing as heading until we introduce set/drift
+        heading = bearing
+
+        prefix = "VHW"
+        return "${}{},{},T,0,M,{},N,0,K,*03".format(self.talkerid, prefix, heading, kts)
 
     def gll(self, lat, lon):
         prefix = "GLL"

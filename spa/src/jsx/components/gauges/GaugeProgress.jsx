@@ -9,7 +9,7 @@ const GaugeProgress = (props) => {
 
   return (
     <React.Fragment>
-      <div className="h-100">
+      <div className="pr-3 pl-3" >
         <CircularProgressbar
           value={gauge.value}
           text={<tspan dx={-20}>{gauge.textValue}</tspan>}

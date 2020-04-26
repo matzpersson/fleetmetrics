@@ -338,9 +338,9 @@ class FleetMap extends React.Component {
         <SlidingPanel
           type={'right'}
           isOpen={this.state.sidePanelOpen}
-          size={20}
+          size={15}
         >
-          <div className="bg-light h-100">
+          <div className="listview w-100">
             <div>My Panel Content</div>
             <button onClick={this.toggleSidePanel}>close</button>
           </div>

@@ -15,7 +15,6 @@ export function fetchAssets() {
     dispatch({type: "FETCH_ASSETS_PENDING"});
     dispatch({type: "FETCH_GAUGES_PENDING"});
 
-    console.log("ASSETS", assetUrl)
     axios({
       method: 'GET',
       url: assetUrl,

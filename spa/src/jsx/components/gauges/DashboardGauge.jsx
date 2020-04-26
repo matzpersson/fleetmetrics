@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AssetGaugeClass from './AssetGaugeClass';
+import { 
+  Row
+} from 'reactstrap';
 
 class DashboardGauge extends Component {
   render() {
@@ -8,7 +11,8 @@ class DashboardGauge extends Component {
       index,
       openSidePanel,
       cell,
-      assets
+      assets,
+      closeGauge
     } = this.props;
 
     let assetGauge;
@@ -29,16 +33,12 @@ class DashboardGauge extends Component {
     }
 
     return (
-      <div >
+      <div className="h-100 d-flex justify-content-center">
         { cell.gid && assetGauge && (
-          <div>
-            <AssetGaugeClass assetGauge={assetGauge} gaugePanelBackground="bg-primary" origin="Dashboard" />
-          </div>
+          <AssetGaugeClass assetGauge={assetGauge} gaugePanelBackground="bg-primary" close={() => closeGauge(index)} />
         )}
         { !cell.gid && (
-          <span className="text">
-            <FontAwesomeIcon icon={['fal','plus']} className="mt-5 text-secondary mb-3" size="4x" onClick={() => openSidePanel(index)}/>
-          </span>
+          <FontAwesomeIcon icon={['fal','plus']} style={{color: '#cccccc'}} className="row align-self-center" size="4x" onClick={() => openSidePanel(index)}/>
         )}
       </div>
     );

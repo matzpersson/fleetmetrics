@@ -72,56 +72,57 @@ class J1939(threading.Thread):
             msg = self.engineSpeed()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineLoad()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineOilPressure()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineOilTemperature()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineCoolantTemperature()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
+            time.sleep(1)
 
             msg = self.engineCoolantPressure()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.alternatorVoltage()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.batteryVoltage()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.transmissionOilTemperature()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.transmissionOilPressure()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineFuelRate()
             self.logging.info("{}{}".format(self.log_prefix, msg))
             self.mqtt_publisher.publish(self.vessel["id"], msg)
-            time.sleep(random.randrange(1, 3, 2))
+            time.sleep(1)
 
             msg = self.engineTotalHours()
             self.logging.info("{}{}".format(self.log_prefix, msg))
@@ -204,6 +205,4 @@ class J1939(threading.Thread):
 
         # 20% utilisation (Again, just crazy numbers for demos)
         hours = ((now - d1).days * 24) * .2
-
-        hours = random.randrange(40, 60, 2)
         return "${}{},{},M,A,A*03".format(self.talkerid, prefix, hours)

@@ -4,12 +4,9 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SlidingPanel from 'react-sliding-side-panel';
 import { connect } from 'react-redux';
-import { saveUser } from '../actions/users'
+import { saveUser } from '../actions/users';
 import DashboardPoints from './DashboardPoints';
 import DashboardGauge from './gauges/DashboardGauge';
-import { 
-  Button
-} from 'reactstrap';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -37,9 +34,11 @@ class Dashboard extends React.Component {
       selectedIndex: null,
       gaugeList: []
     };
+
     this.toggleSidePanel = this.toggleSidePanel.bind(this);
     this.openSidePanel = this.openSidePanel.bind(this);
     this.selectPoint = this.selectPoint.bind(this);
+    this.closeGauge = this.closeGauge.bind(this);
   }
 
   openSidePanel(selectedIndex) {
@@ -55,12 +54,11 @@ class Dashboard extends React.Component {
 
   selectPoint(gauge, index) {
     const {
-      layout,
-      gaugeList
+      layout
     } = this.state;
 
     layout[index]['gid'] = gauge._id
-    console.log('picked one', gauge, index, layout[index])
+    // console.log('picked one', gauge, index, layout[index])
 
     this.setState({
       layout
@@ -74,7 +72,7 @@ class Dashboard extends React.Component {
     return this.state.layout.map((cell, index) => {
       return (
         <div key={index} className="react-grid-layout-panel">
-          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} assets={this.props.assets.rows} />
+          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} assets={this.props.assets.rows} closeGauge={this.closeGauge}/>
         </div>
       );
     });
@@ -105,7 +103,7 @@ class Dashboard extends React.Component {
       return cell;
     })
 
-    console.log("CHANGED layout", dashboard, newLayout)
+    // console.log("CHANGED layout", dashboard, newLayout)
     authUser.dashboard = dashboard
     this.props.dispatch(saveUser(authUser));
   }
@@ -143,6 +141,23 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     this.setLayout()
+  }
+
+  closeGauge(index) {
+    const {
+      layout
+    } = this.state;
+
+    layout[index]['gid'] = null
+    console.log('closed one',layout[index])
+
+    this.setState({
+      layout
+    })
+  }
+
+  onResize(layout, oldItem, newItem) {
+    console.log("RESIZZE")
   }
 
   render() {

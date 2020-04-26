@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from "react-redux";
-import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AssetRealTimeGauge from './AssetRealTimeGauge';
+// import AssetRealTimeGauge from './AssetRealTimeGauge';
+import AssetGaugeClass from '../gauges/AssetGaugeClass';
 
 import { 
   Table,
@@ -15,6 +15,10 @@ import {
   Input
 } from 'reactstrap';
 
+import {
+  fetchAsset
+} from "../../actions"
+
 class AssetPoint extends React.Component {
   constructor(props) {
     super(props)
@@ -23,18 +27,24 @@ class AssetPoint extends React.Component {
       activeTab: '1',
       goBackDefaultLink: '/assets',
       id: props.match.params.id,
+      assetId: null,
       gauge: {
-        name: '',
+        name: 'New Gauge',
+        textValue: '',
         modelName: 'n/a',
-        fieldName: null,
-        valueSuffix: '%',
+        fieldName: 'field-0',
+        valueSuffix: 'm',
         gaugeType: 'number',
-        value: 18,
+        value: 0,
         minValue: 0,
         maxValue: 100,
         minAlert: 30,
-        maxAlert: 80
-      }
+        maxAlert: 80,
+        alertMessage: null,
+        gaugeColour: '#4285f4',
+        gaugePanel: 'bg-primary'
+      },
+      models: null
     };
 
     // this.onCancel = this.onCancel.bind(this);
@@ -44,11 +54,36 @@ class AssetPoint extends React.Component {
   }
 
   componentWillMount() {
-    console.log("PROPS", this.props)
+    const matchArray = this.props.match.url.split('/');
+    const assetId = matchArray[2];
+
+    this.setState({
+      assetId
+    })
+
+    this.props.dispatch(fetchAsset(assetId))
+
+    this.setModels()
   }
 
   componentDidUpdate() {
+    this.setModels()
+  }
 
+  setModels() {
+    const {
+      current
+    } = this.props.assets;
+
+    const {
+      models
+    } = this.state;
+
+    if (current && current.models !== models) {
+      this.setState({
+        models: current.models
+      })
+    }
   }
 
   handleChange(element){
@@ -91,15 +126,30 @@ class AssetPoint extends React.Component {
 
   render() {
     const {
-      gauge 
+      gauge,
+      models
     } = this.state;
+
+    const { 
+      current
+    } = this.props.assets;
+
+    let modelList = null;
+    if (models) {
+      modelList = models.map((model, index) =>
+        <option key={index} value={model.name.toLowerCase()}>{model.name}</option>
+      )
+    }
+
+    console.log(current.name)
+    const assetGauge = {gauge: gauge, assetName: current.name, assetKey: current.key}
 
     return (
       <div className="m-3 form">
         <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name: {gauge.name}</h3>
         <Row className="border rounded bg-light m-0 p-2">
-          <Col sm={2} className="text-center">
-            <AssetRealTimeGauge gauge={gauge} />
+          <Col sm={3} className="text-center p-2">
+            <AssetGaugeClass assetGauge={assetGauge} gaugePanelBackground="bg-primary" />
           </Col>
           <Col>
             <FormGroup row>
@@ -116,7 +166,7 @@ class AssetPoint extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Data Model</Label>
+              <Label for="modelName" sm={12} className="font-weight-bold">Data Model</Label>
               <Col sm={12}>
                 <Input
                   type="select"
@@ -126,30 +176,30 @@ class AssetPoint extends React.Component {
                   onChange={this.handleChange}
                 >
                   <option value="n/a">None</option>
-                  <option value="gpll">GPGLL</option>
-                  <option value="inmwi">INMWI</option>
-                  <option value="indpt">INDPT</option>
+                  {modelList}
                 </Input>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Value Field</Label>
+              <Label for="fieldName" sm={12} className="font-weight-bold">Value Field</Label>
               <Col sm={12}>
                 <Input
                   type="select"
-                  name="roleName"
-                  id="roleName"
+                  name="fieldName"
+                  id="fieldName"
                   value={gauge.fieldName}
-                  onChange={() => {}}
+                  onChange={this.handleChange}
                 >
-                  <option value="gpll">Field-1</option>
-                  <option value="Editor">Field-1</option>
-                  <option value="Contributor">Field-1</option>
+                  <option value="field-0">Field-0</option>
+                  <option value="field-1">Field-1</option>
+                  <option value="field-2">Field-2</option>
+                  <option value="field-3">Field-3</option>
+                  <option value="angle">Angle</option>
                 </Input>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Data Suffix</Label>
+              <Label for="valueSuffix" sm={12} className="font-weight-bold">Data Suffix</Label>
               <Col sm={12}>
                 <Input
                   type="text"

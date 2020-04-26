@@ -39,7 +39,6 @@ switch (action.type) {
   }
   case "FETCH_DEMOUSER_FULLFILLED": {
     const authUser = action.payload;
-    console.log("PAYLOAD", authUser)
     if (authUser.dashboard.length === 0) {
       authUser.dashboard = state.defaults.dashboard
     }

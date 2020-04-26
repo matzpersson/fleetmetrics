@@ -29,6 +29,10 @@ class Vessel(threading.Thread):
         depth = Depth(self.logging, self.vessel, self.mqtt_publisher)
         depth.start()
 
+        self.logging.info("Init Anometer...")
+        wind = Wind(self.logging, self.vessel, self.mqtt_publisher)
+        wind.start()
+
         self.logging.info("Engine 1...")
         engine1 = J1939(self.logging, self.vessel, self.mqtt_publisher, 1)
         engine1.start()

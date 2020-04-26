@@ -6,7 +6,6 @@ import {
 
 export function saveUser(user) {
   return function(dispatch) {
-    dispatch({type: "SAVE_USER_PENDING"});
     const url = `${userUrl}/${user._id}`
     axios({
       method: 'PUT',
@@ -14,7 +13,6 @@ export function saveUser(user) {
       data: user
     })
     .then((response) => {
-      console.log("SAVE", response.data)
       dispatch({type: "SAVE_USER_FULFILLED"});
     })
     .catch((err) => {
@@ -34,8 +32,6 @@ export function createDemoUser() {
       email: 'demo.user@fleetmetrics.io',
       dashboard: []
     }
-
-    console.log("ASSETS", userUrl)
 
     axios({
       method: 'POST',

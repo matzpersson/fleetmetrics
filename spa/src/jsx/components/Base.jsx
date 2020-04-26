@@ -29,7 +29,6 @@ class Base extends Component {
     const REACT_APP_GATEWAY_IO_PORT = process.env.REACT_APP_GATEWAY_IO_PORT
     const endpoint = `http://${REACT_APP_GATEWAY_IO_HOST}:${REACT_APP_GATEWAY_IO_PORT}`
 
-    console.log("IO ENDPOINT", endpoint)
     this.state = {
       response: false,
       endpoint: endpoint
@@ -54,7 +53,7 @@ class Base extends Component {
     const gauges = this.props.gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
     const realtimeGauges = gauges.map((gauge, index) =>
       <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
-        <AssetGaugeClass assetGauge={gauge} gaugePanelBackground="bg-none" />
+        <AssetGaugeClass assetGauge={gauge} wrap="row"/>
       </div>
     );
     return (realtimeGauges);
