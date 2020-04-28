@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import AssetRealTimeGauge from './AssetRealTimeGauge';
-import AssetGaugeClass from '../gauges/AssetGaugeClass';
+import AssetDataPoint from './AssetDataPoint';
 
 import { 
   Table,
@@ -149,7 +148,7 @@ class AssetPoint extends React.Component {
         <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name: {gauge.name}</h3>
         <Row className="border rounded bg-light m-0 p-2">
           <Col sm={3} className="text-center p-2">
-            <AssetGaugeClass assetGauge={assetGauge} gaugePanelBackground="bg-primary" />
+            <AssetDataPoint assetGauge={assetGauge} gaugePanelBackground="bg-primary" />
           </Col>
           <Col>
             <FormGroup row>

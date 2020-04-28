@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AssetGaugeClass from './AssetGaugeClass';
+import AssetDataPoint from '../assets/AssetDataPoint';
 import { 
   Row
 } from 'reactstrap';
 
-class DashboardGauge extends Component {
+class DashboardDataPoint extends Component {
   render() {
     const {
       index,
@@ -35,7 +35,7 @@ class DashboardGauge extends Component {
     return (
       <div className="h-100 d-flex justify-content-center">
         { cell.gid && assetGauge && (
-          <AssetGaugeClass assetGauge={assetGauge} gaugePanelBackground="bg-primary" close={() => closeGauge(index)} />
+          <AssetDataPoint assetGauge={assetGauge} gaugePanelBackground="bg-primary" close={() => closeGauge(index)} />
         )}
         { !cell.gid && (
           <FontAwesomeIcon icon={['fal','plus']} style={{color: '#cccccc'}} className="row align-self-center" size="4x" onClick={() => openSidePanel(index)}/>
@@ -45,4 +45,4 @@ class DashboardGauge extends Component {
   }
 }
 
-export default DashboardGauge;
+export default DashboardDataPoint;

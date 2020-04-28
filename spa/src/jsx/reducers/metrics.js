@@ -4,7 +4,8 @@ export default function reducer( state={
   error: null,
   assets: [],
   rows: [],
-  metric: null
+  metric: null,
+  ranges: []
 }, action) {
 
 switch (action.type) {
@@ -30,21 +31,38 @@ switch (action.type) {
       rows: rows
     }
   }
-  // case "FETCH_ASSETS_PENDING": {
-  //   return {
-  //     ...state,
-  //     fetching: true,
-  //     fetched: false
-  //   }
-  // }
-  // case "FETCH_ASSETS_FULLFILLED": {
-  //   return {
-  //     ...state,
-  //     fetching: false,
-  //     fetched: true,
-  //     // assets: action.payload
-  //   }
-  // }
+  case "FETCH_MODELSRANGE_PENDING": {
+    return {
+      ...state,
+      fetching: true,
+      fetched: false
+    }
+  }
+  case "FETCH_MODELSRANGE_FULLFILLED": {
+    const ranges = state.ranges;
+    const idx = ranges.findIndex(range => range.topic === action.payload.topic && range.model === action.payload.model);
+    if (idx === -1) {
+      const range = {
+        topic: action.payload.topic,
+        model: action.payload.model,
+        fromDate: action.payload.fromDate,
+        toDate: action.payload.toDate,
+        data: action.payload.data
+      };
+      ranges.push(range);
+    } else {
+      ranges[idx].data = action.payload.data;
+      ranges[idx].fromDate = action.payload.fromDate;
+      ranges[idx].toDate = action.payload.toDate;
+    }
+
+    return {
+      ...state,
+      fetching: false,
+      fetched: true,
+      ranges: ranges
+    }
+  }
 
   default: break;
 }

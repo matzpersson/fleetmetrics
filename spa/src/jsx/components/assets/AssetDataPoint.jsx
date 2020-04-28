@@ -1,21 +1,28 @@
 import React from 'react';
 import { connect } from "react-redux";
-import GaugeProgress from './GaugeProgress';
-import GaugeNumber from './GaugeNumber';
+import GaugeProgress from '../gauges/GaugeProgress';
+import GaugeNumber from '../gauges/GaugeNumber';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ChartTinyLine from '../charts/ChartTinyLine';
 import ChartLine from '../charts/ChartLine';
+import ChartBar from '../charts/ChartBar';
+import { fetchMetricsModelRange } from '../../actions/metrics';
 
-class AssetGaugeClass extends React.Component {
+class AssetDataPoint extends React.Component {
   constructor(props) {
     super(props)
 
+    const now = new Date()
     this.state = {
       assetKey: null,
       assetName: null,
       wrap: 'cell',
-      showChart: false,
-      chart: null,
+      showChart: null,
+      chart: {
+        fromDate: new Date(now - (1000 * 60 * 60 * 24 * 1)),
+        toDate: now,
+        data: [],
+        type: 'bar'
+      },
       gauge: {
         name: '',
         textValue: '',
@@ -40,9 +47,17 @@ class AssetGaugeClass extends React.Component {
   }
 
   toggleChart() {
+    const {
+      assetKey,
+      gauge,
+      chart
+    } = this.state;
+
     this.setState({
       showChart: !this.state.showChart
-    })
+    },
+      () => {if (this.state.showChart) this.props.dispatch(fetchMetricsModelRange(assetKey, gauge.modelName, chart.fromDate.toISOString(), chart.toDate.toISOString()))}
+    )
   }
 
   componentDidMount() {
@@ -51,7 +66,6 @@ class AssetGaugeClass extends React.Component {
       wrap
     } = this.props;
 
-    // console.log("ASSET GAUGE", assetGauge)
     const gauge = assetGauge.gauge;
     const assetKey = assetGauge.assetKey;
     const assetName = assetGauge.assetName;
@@ -66,6 +80,7 @@ class AssetGaugeClass extends React.Component {
 
     if (gauge) {
       gauge.value = 0;
+      gauge.default = (gauge.default ? gauge.default : 'gauge');
     }
 
     this.setGauge(gauge);
@@ -79,23 +94,32 @@ class AssetGaugeClass extends React.Component {
 
   componentDidUpdate() {
     const {
-      metric
+      metric,
+      ranges
     } = this.props.metrics;
 
     const {
       gauge,
-      assetKey
+      assetKey,
+      showChart,
+      chart
     } = this.state;
 
-    // if (metric){
-    //   console.log("CHANGED", metric.sentenceModel, gauge.modelName, metric.topic, metric.topic, gauge.fieldName, metric.data)
-    // }
-
-    if (metric && metric.sentenceModel === gauge.modelName && metric.topic === metric.topic && gauge.fieldName in metric.data) {
+    if (metric && metric.sentenceModel === gauge.modelName && metric.topic === assetKey && gauge.fieldName in metric.data) {
       const value = parseFloat(metric.data[gauge.fieldName]);
       if (value !== gauge.value){
         gauge.value = value;
         this.setGauge(gauge);
+      }
+    }
+
+    if (showChart) {
+      const range = ranges.find(range => range.topic === assetKey && range.model === gauge.modelName);
+      if (range && range.data !== chart.data) {
+        chart.data = range.data
+        this.setState({
+          chart
+        })
       }
     }
   }
@@ -105,19 +129,34 @@ class AssetGaugeClass extends React.Component {
       assetGauge
     } = this.props;
 
+    let {
+      showChart,
+      chart
+    } = this.state;
+
     const assetKey = assetGauge.assetKey;
     const assetName = assetGauge.assetName;
+
+    // Set defaults. Load model range if applicable
+    const showChartDefault = (gauge.default === 'chart' ? true : false);
+    if (showChart === null) {
+      showChart = showChartDefault;
+      if (showChart === true) {
+        this.props.dispatch(fetchMetricsModelRange(assetKey, gauge.modelName, chart.fromDate.toISOString(), chart.toDate.toISOString()));
+      }
+    }
 
     gauge.textValue = `${gauge.value.toFixed(gauge.decimals)}${gauge.valueSuffix}`;
     gauge.gaugeColour = '#4285f4';
     gauge.gaugePanel = 'bg-primary';
     gauge.alertMessage = null;
 
-    // console.log("SET GAUGE", this.props.gaugePanelBackground);
+    // Set background if passed in
     if (this.props.gaugePanelBackground) {
       gauge.gaugePanel = this.props.gaugePanelBackground
     }
 
+    // Set Min Alert
     if (gauge.minAlert > gauge.value && gauge.minAlert != -1) {
       gauge.alertMessage = 'Alert - value is too LOW';
       gauge.gaugeColour = '#ea4335';
@@ -125,6 +164,7 @@ class AssetGaugeClass extends React.Component {
       console.log("set low")
     } 
 
+    // Set Max Alert
     if (gauge.maxAlert < gauge.value && gauge.maxAlert != -1) {
       gauge.alertMessage = 'Alert - value is too HIGH';
       gauge.gaugeColour = '#ea4335';
@@ -136,6 +176,7 @@ class AssetGaugeClass extends React.Component {
       gauge,
       assetKey,
       assetName,
+      showChart
     })
   }
 
@@ -157,17 +198,19 @@ class AssetGaugeClass extends React.Component {
 
   selectChart(type) {
     const {
-      gauge
+      chart
     } = this.state;
 
-    return (<ChartTinyLine />)
-    // switch (type) {
-    //   case 'dial':
-    //     return (<GaugeProgress gauge={gauge} />);
-    //   case 'number':
-    //     return (<GaugeNumber gauge={gauge}/>);
-    //   default: break;
-    // }
+    console.log("RENDERING CHART", chart)
+    switch (type) {
+      case 'line':
+        return (<ChartLine chart={chart} />);
+      case 'bar':
+        return (<ChartBar chart={chart} />);
+      default: 
+        return (<ChartBar chart={chart} />);
+      ;
+    }
   }
 
   selectWrap(wrap) {
@@ -199,7 +242,7 @@ class AssetGaugeClass extends React.Component {
               </span>
             </div>
 
-            {(showChart ? this.selectChart(gauge.gaugeType) : this.selectGauge(gauge.gaugeType))}
+            {(showChart ? this.selectChart(gauge.chartType) : this.selectGauge(gauge.gaugeType))}
 
             <div className="p-1">
               { gauge.alertMessage && (
@@ -209,43 +252,14 @@ class AssetGaugeClass extends React.Component {
             </div>
           </div>
           )
-      case 'cell2':
-        return (
-          <div className={gaugeMainPanelClass}>
-            <div className={gaugeTitlePanelClass} style={{fontSize: 14}}>
-              <span>{gauge.name}</span>
-              <span>
-                <FontAwesomeIcon icon={['fal',(showChart ? 'tachometer-fast' : 'chart-line')]} className="mr-3" onClick={() => this.toggleChart()}/>
-                <FontAwesomeIcon icon={['fal','times']} className="mr-1" onClick={() => this.props.close()}/>
-              </span>
-            </div>
-            <div className="m-1 flex-grow-1 d-flex justify-content-center h-100">
-              {/* <div className="row align-self-center">{this.selectChart(gauge.gaugeType)}</div> */}
-
-                {(showChart ? this.selectChart(gauge.gaugeType) : this.selectGauge(gauge.gaugeType))}
-
-            </div>
-            { gauge.alertMessage && (
-              <small className="text-danger" >{gauge.alertMessage}</small>
-            )}
-            <small className="m-1 p-1 text-center flex-grow-0">{assetName} - 12h ago</small>
-          </div>
-        )
-
       default: return;
     }
   }
 
-
   render() {
     const {
-      // gauge,
-      // assetName,
       wrap
     } = this.state;
-
-    // const gaugeMainPanelClass = `d-flex justify-content-center flex-column`;
-    // const gaugeTitlePanelClass = `d-flex justify-content-between p-1 ${gauge.gaugePanel} text-white border-bottom border-secondary`;
 
     return (
       <div className="h-100 w-100">
@@ -261,4 +275,4 @@ const mapStoreToProps = (store) => {
   }
 }
 
-export default connect(mapStoreToProps)(AssetGaugeClass);
+export default connect(mapStoreToProps)(AssetDataPoint);

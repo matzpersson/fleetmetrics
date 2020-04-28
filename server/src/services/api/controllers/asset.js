@@ -2,7 +2,7 @@ import Asset from '../models/asset';
 
 // Handle index actions
 exports.index = function (req, res) {
-  Asset.get(function (err, assets) {
+  Asset.find(req.query, function (err, assets) {
     if (err) {
         res.json({
             status: "error",

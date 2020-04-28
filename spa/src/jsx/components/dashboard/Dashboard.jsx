@@ -4,9 +4,9 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SlidingPanel from 'react-sliding-side-panel';
 import { connect } from 'react-redux';
-import { saveUser } from '../actions/users';
+import { saveUser } from '../../actions/users';
 import DashboardPoints from './DashboardPoints';
-import DashboardGauge from './gauges/DashboardGauge';
+import DashboardDataPoint from './DashboardDataPoint';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -72,7 +72,7 @@ class Dashboard extends React.Component {
     return this.state.layout.map((cell, index) => {
       return (
         <div key={index} className="react-grid-layout-panel">
-          <DashboardGauge openSidePanel={openSidePanel} index={index} cell={cell} assets={this.props.assets.rows} closeGauge={this.closeGauge}/>
+          <DashboardDataPoint openSidePanel={openSidePanel} index={index} cell={cell} assets={this.props.assets.rows} closeGauge={this.closeGauge}/>
         </div>
       );
     });
@@ -93,7 +93,6 @@ class Dashboard extends React.Component {
   }
 
   onLayoutChange(newLayout) {
-    console.log("UPDATING LAYOUT")
     const {
       authUser,
     } = this.props.users;
@@ -106,21 +105,6 @@ class Dashboard extends React.Component {
     // console.log("CHANGED layout", dashboard, newLayout)
     authUser.dashboard = dashboard
     this.props.dispatch(saveUser(authUser));
-  }
-
-  saveLayout() {
-    // const {
-    //   authUser,
-    // } = this.props.users;
-
-    // const dashboard = newLayout.map((cell, index) => {
-    //   cell.gid = this.state.layout[index].gid;
-    //   return cell;
-    // })
-
-    // console.log("CHANGED layout", this.state.layout, newLayout)
-    // authUser.dashboard = newLayout
-    // this.props.dispatch(saveUser(authUser));
   }
 
   setLayout() {
@@ -149,15 +133,10 @@ class Dashboard extends React.Component {
     } = this.state;
 
     layout[index]['gid'] = null
-    console.log('closed one',layout[index])
 
     this.setState({
       layout
     })
-  }
-
-  onResize(layout, oldItem, newItem) {
-    console.log("RESIZZE")
   }
 
   render() {

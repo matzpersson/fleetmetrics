@@ -6,7 +6,7 @@ import logo from '../../images/logo.png';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import socketIOClient from "socket.io-client";
-import AssetGaugeClass from './gauges/AssetGaugeClass';
+import AssetDataPoint from './assets/AssetDataPoint';
 
 import { putMetrics } from "../actions/"
 import { fetchDemoUser } from "../actions/users"
@@ -53,7 +53,7 @@ class Base extends Component {
     const gauges = this.props.gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
     const realtimeGauges = gauges.map((gauge, index) =>
       <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
-        <AssetGaugeClass assetGauge={gauge} wrap="row"/>
+        <AssetDataPoint assetGauge={gauge} wrap="row"/>
       </div>
     );
     return (realtimeGauges);

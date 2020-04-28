@@ -1,5 +1,4 @@
-import Dashboard from '../components/Dashboard.jsx';
-// import Grid from '../components/Grid.jsx';
+import Dashboard from '../components/dashboard/Dashboard.jsx';
 import Fleet from '../components/Fleet.jsx';
 import Metrics from '../components/Metrics.jsx';
 import Assets from '../components/assets/Assets.jsx';

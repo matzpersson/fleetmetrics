@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 const ChartBar = (props) => {
@@ -21,7 +21,7 @@ const ChartBar = (props) => {
     <React.Fragment>
        <div style={{ width: '100%', height: '100%' }}>
         <ResponsiveContainer>
-          <LineChart
+          <BarChart
             data={chart.data}
             margin={{
               top: 20, right: 30, left: 20, bottom: 50,
@@ -31,8 +31,8 @@ const ChartBar = (props) => {
             <XAxis dataKey="recorded" angle={-45} textAnchor="end" tick={{fontSize: 12}}/>
             <YAxis />
             <Tooltip />
-            <Line dataKey='data.field-0' fill={getRandomColor()} />
-          </LineChart>
+            <Bar dataKey='data.field-0' fill={getRandomColor()} />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </React.Fragment>
