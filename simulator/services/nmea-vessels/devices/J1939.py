@@ -67,7 +67,6 @@ class J1939(threading.Thread):
     def run(self):
         self.logging.info("Engine parameters..")
 
-        self.current_position = self.vessel["start_point"]
         while True:
             msg = self.engineSpeed()
             self.logging.info("{}{}".format(self.log_prefix, msg))

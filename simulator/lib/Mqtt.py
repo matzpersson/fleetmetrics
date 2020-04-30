@@ -34,7 +34,8 @@ class MqttPublisher(threading.Thread):
         payload = "{},{}".format(now.strftime("%Y-%m-%d %H:%M:%S.%f"), msg)
 
         self.client.publish(topic, payload=payload, qos=1, retain=True)
-        self.logging.info("MttqPublisher sending: {} for topic: {}".format(payload, topic))
+        # self.logging.info("MttqPublisher sending: {} for topic: {}".format(payload, topic))
 
     def on_publish(self, client, userdata, mid):
-        self.logging.info("Mttq published!")
+        # self.logging.info("Mttq published!")
+        pass

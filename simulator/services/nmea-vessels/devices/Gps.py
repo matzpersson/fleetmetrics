@@ -76,8 +76,8 @@ class Gps(threading.Thread):
                 self.current_position = self.next_waypoint
                 self.next_waypoint = self.vessel["waypoints"][idx]
 
-            print("DISTANCE", distanceToWaypoint)
-
+            # print("DISTANCE", distanceToWaypoint)
+            
             time.sleep(self.random_sleep)
 
     def hdt(self, bearing):
@@ -130,7 +130,8 @@ class Gps(threading.Thread):
     def encodeCoord(self, coord):
         d = int(coord)
         m = 60 * (coord - d)
-        return "{}{}".format(d,m)
+
+        return '{}{:09.6f}'.format(d,m)
 
     def encodeDate(self):
         now = datetime.now()

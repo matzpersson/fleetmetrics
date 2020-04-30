@@ -90,12 +90,12 @@ class Base extends Component {
             <AppMenuItem url="/statistics" caption="Statistics" iconName="chart-line" location={location} />
           </ul>
 
-          <div className="section-header mt-3">
+          {/* <div className="section-header mt-3">
             <span className="section-title text-bold text-light">METRIC WATCH</span>
           </div>
           <div className="m-2">
             {assetsGauges}
-          </div>
+          </div> */}
 
         </Col>
         <Col className="addScroll m-0 p-0">

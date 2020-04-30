@@ -16,7 +16,11 @@ import {Vector as VectorSource, Cluster} from 'ol/source';
 import {Vector as VectorLayer, Heatmap} from 'ol/layer';
 import SlidingPanel from 'react-sliding-side-panel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { 
+  Row,
+  Col
+} from 'reactstrap';
+import FleetAssetsPanel from './FleetAssetsPanel';
 import assetIcon from '../../images/asset.png';
 
 import {
@@ -27,16 +31,6 @@ import {
   Circle as CircleStyle,
   Text }
 from 'ol/style';
-
-// var mousePositionControl = new MousePosition({
-//   coordinateFormat: createStringXY(4),
-//   projection: 'EPSG:4326',
-//   // comment the following two lines to have the mouse position
-//   // be placed within the map.
-//   className: 'custom-mouse-position',
-//   target: document.getElementById('mouse-position'),
-//   undefinedHTML: '&nbsp;'
-// });
 
 class FleetMap extends React.Component {
   constructor() {
@@ -55,6 +49,7 @@ class FleetMap extends React.Component {
     }
 
     this.toggleSidePanel = this.toggleSidePanel.bind(this);
+    this.zoomExtent = this.zoomExtent.bind(this);
   }
 
  componentDidMount() {
@@ -172,7 +167,8 @@ class FleetMap extends React.Component {
 
     let {
       currentPosition,
-      assetLayer
+      assetLayer,
+      map
     } = this.state;
 
     if (metric && metric.data.lat && metric.data.lon) {
@@ -237,7 +233,7 @@ class FleetMap extends React.Component {
 
       features.push(trailFeature);
       features.push(assetFeature);
-      this.state.assetLayer.setSource(
+      assetLayer.setSource(
         new VectorSource({
           features: features
         })
@@ -250,8 +246,27 @@ class FleetMap extends React.Component {
           assetLayer,
           currentPosition
         });
-
       }
+
+      // Zoom to extent
+      // const assetSource = assetLayer.getSource();
+      // var extent = assetSource.getExtent();
+      // if (extent) {
+      //   map.getView().fit(extent)
+      // }
+    }
+  }
+
+  zoomExtent() {
+    let {
+      assetLayer,
+      map
+    } = this.state;
+
+    const assetSource = assetLayer.getSource();
+    var extent = assetSource.getExtent();
+    if (extent) {
+      map.getView().fit(extent)
     }
   }
 
@@ -323,12 +338,20 @@ class FleetMap extends React.Component {
 
     return (
       <div className="p-0 m-0 h-100 d-flex flex-column">
-        <div className="p-0 m-0 flex-grow-1" ref="mapContainer" id="mapContainer"></div>
+        <Row className="p-0 m-0 flex-grow-1">
+          <Col className="p-0 m-0">
+            <div className="h-100" ref="mapContainer" id="mapContainer"></div>
+          </Col>
+          <Col sm={2} className="listview">
+            <FleetAssetsPanel assets={this.props.assets} gauges={this.props.gauges} />
+          </Col>
+        </Row>
+        
         <div className="p-2 bg-primary text-light d-flex justify-content-between" style={{fontSize: 14}}>
           <div id="mouse-position"></div>
 
           <div className="d-flex">
-            <FontAwesomeIcon icon={['fal', 'cube']} className={'text-white mr-3'} title="Asset configuration"/>
+            <FontAwesomeIcon icon={['fal', 'expand']} className={'text-white mr-3'} title="Zoom Extent" onClick={this.zoomExtent} />
             <FontAwesomeIcon icon={['fal', 'stream']} className={'text-white mr-3'} title="Sentence stream"/>
             <FontAwesomeIcon icon={['fal', 'cog']} className={'text-white mr-3'} title="Settings" onClick={this.toggleSidePanel} />
             <div>Click Lat/Lng: <span className="text-warning">{lastClick}</span></div>
@@ -338,10 +361,10 @@ class FleetMap extends React.Component {
         <SlidingPanel
           type={'right'}
           isOpen={this.state.sidePanelOpen}
-          size={15}
+          size={10}
         >
           <div className="listview w-100">
-            <div>My Panel Content</div>
+            <div>Settings maybe</div>
             <button onClick={this.toggleSidePanel}>close</button>
           </div>
         </SlidingPanel>
@@ -352,7 +375,9 @@ class FleetMap extends React.Component {
 
 const mapStoreToProps = (store) => {
   return {
-    metrics: store.metrics
+    metrics: store.metrics,
+    assets: store.assets,
+    gauges: store.gauges
   }
 }
 

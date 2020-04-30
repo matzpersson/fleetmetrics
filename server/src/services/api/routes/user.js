@@ -1,10 +1,10 @@
 // Initialize express router
 let router = require('express').Router();
 
-// Import contact controller
+// Import controller
 var userController = require('../controllers/user');
 
-// Contact routes
+// routes
 router.route('/users')
   .get(userController.index)
   .post(userController.new);

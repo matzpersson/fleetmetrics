@@ -1,10 +1,10 @@
 // Initialize express router
 let router = require('express').Router();
 
-// Import contact controller
+// Import controller
 var assetController = require('../controllers/asset');
 
-// Contact routes
+// routes
 router.route('/assets')
   .get(assetController.index)
   .post(assetController.new);

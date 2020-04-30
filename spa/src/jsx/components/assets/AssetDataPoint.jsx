@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChartLine from '../charts/ChartLine';
 import ChartBar from '../charts/ChartBar';
 import { fetchMetricsModelRange } from '../../actions/metrics';
+import { HalfCircleSpinner } from 'react-epic-spinners';
 
 class AssetDataPoint extends React.Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class AssetDataPoint extends React.Component {
     this.selectGauge = this.selectGauge.bind(this);
     this.selectWrap = this.selectWrap.bind(this);
     this.toggleChart = this.toggleChart.bind(this);
+    this.refreshChart = this.refreshChart.bind(this);
   }
 
   toggleChart() {
@@ -95,7 +97,9 @@ class AssetDataPoint extends React.Component {
   componentDidUpdate() {
     const {
       metric,
-      ranges
+      ranges,
+      fetching,
+      fetched
     } = this.props.metrics;
 
     const {
@@ -114,7 +118,7 @@ class AssetDataPoint extends React.Component {
     }
 
     if (showChart) {
-      const range = ranges.find(range => range.topic === assetKey && range.model === gauge.modelName);
+      const range = ranges.find(range => range.topic === assetKey && range.model === gauge.modelName); 
       if (range && range.data !== chart.data) {
         chart.data = range.data
         this.setState({
@@ -122,6 +126,17 @@ class AssetDataPoint extends React.Component {
         })
       }
     }
+
+  }
+
+  refreshChart() {
+    let {
+      gauge,
+      chart,
+      assetKey
+    } = this.state;
+
+    this.props.dispatch(fetchMetricsModelRange(assetKey, gauge.modelName, chart.fromDate.toISOString(), chart.toDate.toISOString()));
   }
 
   setGauge(gauge){
@@ -161,7 +176,6 @@ class AssetDataPoint extends React.Component {
       gauge.alertMessage = 'Alert - value is too LOW';
       gauge.gaugeColour = '#ea4335';
       gauge.gaugePanel = 'bg-danger';
-      console.log("set low")
     } 
 
     // Set Max Alert
@@ -169,7 +183,6 @@ class AssetDataPoint extends React.Component {
       gauge.alertMessage = 'Alert - value is too HIGH';
       gauge.gaugeColour = '#ea4335';
       gauge.gaugePanel = 'bg-danger';
-      console.log("set high")
     }
 
     this.setState({
@@ -182,17 +195,16 @@ class AssetDataPoint extends React.Component {
 
   selectGauge(type) {
     const {
-      gauge,
-      width,
-      height
+      gauge
     } = this.state;
 
     switch (type) {
-      case 'dial':
-        return (<GaugeProgress gauge={gauge} />);
-      case 'number':
+      // case 'dial':
+      //   return (<GaugeProgress gauge={gauge} />);
+      // case 'number':
+      //   return (<GaugeNumber gauge={gauge}/>);
+      default:
         return (<GaugeNumber gauge={gauge}/>);
-      default: break;
     }
   }
 
@@ -201,7 +213,6 @@ class AssetDataPoint extends React.Component {
       chart
     } = this.state;
 
-    console.log("RENDERING CHART", chart)
     switch (type) {
       case 'line':
         return (<ChartLine chart={chart} />);
@@ -220,7 +231,6 @@ class AssetDataPoint extends React.Component {
       showChart
     } = this.state;
 
-    const gaugeMainPanelClass = `d-flex justify-content-center flex-column h-100 flex-column`;
     const gaugeTitlePanelClass = `d-flex justify-content-between p-1 ${gauge.gaugePanel} text-white border-bottom border-secondary flex-grow-0`;
 
     switch(wrap) {
@@ -237,6 +247,10 @@ class AssetDataPoint extends React.Component {
             <div className={gaugeTitlePanelClass} style={{fontSize: 14}}>
               <span>{gauge.name}</span>
               <span>
+                { showChart && (
+                  <FontAwesomeIcon icon={['fal','redo']} className="mr-2" onClick={() => this.refreshChart()}/>
+                )}
+
                 <FontAwesomeIcon icon={['fal',(showChart ? 'tachometer-fast' : 'chart-line')]} className="mr-2" onClick={() => this.toggleChart()}/>
                 <FontAwesomeIcon icon={['fal','times']} className="mr-1" onClick={() => this.props.close()}/>
               </span>
