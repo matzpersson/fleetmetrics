@@ -9,7 +9,7 @@ import socketIOClient from "socket.io-client";
 import AssetDataPoint from './assets/AssetDataPoint';
 
 import { putMetrics } from "../actions/"
-import { fetchDemoUser } from "../actions/users"
+import { fetchCurrentUser } from "../actions/users"
 import { fetchAssets } from '../actions'
 
 import { 
@@ -39,14 +39,14 @@ class Base extends Component {
 
   componentDidMount() {
     // Temporary demo user environment
-    this.props.dispatch(fetchDemoUser());
+    this.props.dispatch(fetchCurrentUser());
 
     // Fetch assets
     this.props.dispatch(fetchAssets());
 
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
+    // socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
   }
 
   renderGauges(asset) {

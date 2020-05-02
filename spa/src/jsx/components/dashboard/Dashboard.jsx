@@ -4,7 +4,7 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SlidingPanel from 'react-sliding-side-panel';
 import { connect } from 'react-redux';
-import { saveUser } from '../../actions/users';
+import { saveUserDashboard } from '../../actions/users';
 import DashboardPoints from './DashboardPoints';
 import DashboardDataPoint from './DashboardDataPoint';
 
@@ -69,6 +69,7 @@ class Dashboard extends React.Component {
 
   generateDOM() {
     const openSidePanel = this.openSidePanel;
+    console.log("LAYOUT", this.state.layout)
     return this.state.layout.map((cell, index) => {
       return (
         <div key={index} className="react-grid-layout-panel">
@@ -93,28 +94,22 @@ class Dashboard extends React.Component {
   }
 
   onLayoutChange(newLayout) {
-    const {
-      authUser,
-    } = this.props.users;
-
     const dashboard = newLayout.map((cell, index) => {
       cell.gid = this.state.layout[index].gid;
       return cell;
     })
 
-    // console.log("CHANGED layout", dashboard, newLayout)
-    authUser.dashboard = dashboard
-    this.props.dispatch(saveUser(authUser));
+    this.props.dispatch(saveUserDashboard(dashboard));
   }
 
   setLayout() {
     const {
-      authUser
+      currentUser
     } = this.props.users;
 
-    if (this.state.layout !== authUser.dashboard) {
+    if (this.state.layout !== currentUser.dashboard) {
       this.setState({
-        layout: authUser.dashboard
+        layout: currentUser.dashboard
       })
     }
   }

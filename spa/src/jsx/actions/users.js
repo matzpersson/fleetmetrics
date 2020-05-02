@@ -1,16 +1,18 @@
 import axios from "axios";
 import 'dotenv/config';
 import {
-  userUrl
+  userUrl,
+  currentUrl
 } from '../constants/api.js';
 
-export function saveUser(user) {
+export function saveUserDashboard(dashboard) {
   return function(dispatch) {
-    const url = `${userUrl}/${user._id}`
+    const url = `${currentUrl}`
+    const data = {dashboard: dashboard};
     axios({
       method: 'PUT',
       url,
-      data: user
+      data
     })
     .then((response) => {
       dispatch({type: "SAVE_USER_FULFILLED"});
@@ -22,50 +24,15 @@ export function saveUser(user) {
   }
 }
 
-export function createDemoUser() {
+export function fetchCurrentUser() {
   return function(dispatch) {
-    dispatch({type: "CREATE_DEMOUSER_PENDING"});
-    const params = {
-      hashKey: 'demouser',
-      firstName: 'Demo',
-      lastName: 'User',
-      email: 'demo.user@fleetmetrics.io',
-      dashboard: []
-    }
-
-    axios({
-      method: 'POST',
-      url: userUrl,
-      data: params
-    })
-    .then((response) => {
-      console.log("CREATE", response.data)
-      dispatch({type: "FETCH_DEMOUSER_FULLFILLED", payload: response.data.data[0]});
-    })
-    .catch((err) => {
-      console.log('Error - ', err)
-      //dispatch({type: "FETCH_EVENTS_REJECTED", payload: err})
-    })
-  }
-}
-
-export function fetchDemoUser() {
-  return function(dispatch) {
-    dispatch({type: "FETCH_DEMOUSER_PENDING"});
-    const params = {hashKey: 'demouser'}
+    dispatch({type: "FETCH_CURRENT_PENDING"});
     axios({
       method: 'GET',
-      url: userUrl,
-      params
-
+      url: currentUrl
     })
     .then((response) => {
-      if (!response.data.data || response.data.data.length === 0) {
-        console.log("create a user")
-        dispatch(createDemoUser());
-      } else {
-        dispatch({type: "FETCH_DEMOUSER_FULLFILLED", payload: response.data.data[0]});
-      }
+        dispatch({type: "FETCH_CURRENT_FULLFILLED", payload: response.data.data});
     })
     .catch((err) => {
       console.log('Error - ', err)

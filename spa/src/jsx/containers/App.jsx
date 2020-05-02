@@ -7,8 +7,7 @@ import {
 
 import '../../styles/App.css';
 import Base from '../components/Base.jsx';
-// import { fetchInstances } from "../actions/"
-
+import Login from '../components/Login.jsx';
 
 class App extends Component {
   componentWillMount() {
@@ -16,12 +15,21 @@ class App extends Component {
   }
 
   render() {
+    const {
+      authenticated
+    } = this.props.auth;
+
+    // const authenticated = false;
+
     return (
       <Router>
         <div className="container-fluid p-0 h-100 d-flex flex-column">
+        { !authenticated && (<Login />) }
+        { authenticated && (
           <Switch>
             <Base />
           </Switch>
+        )}
         </div>
       </Router>
     );
@@ -30,7 +38,8 @@ class App extends Component {
 
 const mapStoreToProps = (store) => {
   return {
-    clusters: store.clusters
+    clusters: store.clusters,
+    auth: store.auth
   }
 }
 

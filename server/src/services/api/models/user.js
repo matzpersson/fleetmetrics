@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+import 'dotenv/config';
+
+const jwt = require('jsonwebtoken');
+const Joi = require('joi');
 
 // Setup schema
 var userSchema = mongoose.Schema({
@@ -14,8 +18,9 @@ var userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  hashKey: {
-    type: String
+  password: {
+    type: String,
+    required: true
   },
   dashboard: {
     type: Object,
@@ -26,6 +31,11 @@ var userSchema = mongoose.Schema({
     default: Date.now
   }
 }, { versionKey: false });
+
+userSchema.methods.generateAuthToken = function() { 
+  const token = jwt.sign({ _id: this._id, email: this.email }, process.env.LOGIN_SECRET); 
+  return token;
+}
 
 // Export Contact model
 var User = module.exports = mongoose.model('users', userSchema);

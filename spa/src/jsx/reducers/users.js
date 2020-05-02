@@ -23,30 +23,25 @@ export default function reducer( state={
     ]
   },
   rows: [],
-  currentUser: {},
-  authUser: {
+  currentUser: {
     dashboard: []
   }
 }, action) {
 
 switch (action.type) {
-  case "FETCH_DEMOUSER_PENDING": {
+  case "FETCH_CURRENT_PENDING": {
     return {
       ...state,
       fetching: true,
       fetched: false
     }
   }
-  case "FETCH_DEMOUSER_FULLFILLED": {
-    const authUser = action.payload;
-    if (authUser.dashboard.length === 0) {
-      authUser.dashboard = state.defaults.dashboard
-    }
+  case "FETCH_CURRENT_FULLFILLED": {
     return {
       ...state,
       fetching: false,
       fetched: true,
-      authUser: authUser
+      currentUser: action.payload
     }
   }
   case "FETCH_USER_PENDING": {

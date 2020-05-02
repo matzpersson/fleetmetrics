@@ -12,7 +12,9 @@ let apiMetric = require("./routes/metric");
 let apiPermission = require("./routes/permission");
 
 const app = express();
-app.use(cors())
+app.use(cors({
+  exposedHeaders: ['Content-Length', 'x-auth-token', 'Content-Type']
+}));
 
 app.use(bodyParser.urlencoded({
   extended: true

@@ -4,5 +4,7 @@ const url = `http://${GATEWAY_API_HOST}:${GATEWAY_API_PORT}/api`;
 
 export const assetUrl = `${url}/assets`;
 export const userUrl = `${url}/users`;
+export const loginUrl = `${url}/login`;
+export const currentUrl = `${url}/current`;
 export const metricModelsRangeUrl = `${url}/metrics/models/range`;
 

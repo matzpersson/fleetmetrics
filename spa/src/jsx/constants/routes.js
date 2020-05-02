@@ -5,12 +5,20 @@ import Assets from '../components/assets/Assets.jsx';
 import Asset from '../components/assets/Asset.jsx';
 import AssetPoint from '../components/assets/AssetPoint.jsx';
 import Statistics from '../components/Statistics.jsx';
+import Login from '../components/Login.jsx';
 
 export const routes = [
   {
     path: "/",
     component: Dashboard,
     title: "Dashboard",
+    exact: true,
+    authRequired: false
+  },
+  {
+    path: "/login",
+    component: Login,
+    title: "Login",
     exact: true,
     authRequired: false
   },
