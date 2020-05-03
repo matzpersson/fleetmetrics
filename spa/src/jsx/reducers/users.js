@@ -24,7 +24,8 @@ export default function reducer( state={
   },
   rows: [],
   currentUser: {
-    dashboard: []
+    dashboard: [],
+    permissions: []
   }
 }, action) {
 
@@ -41,7 +42,7 @@ switch (action.type) {
       ...state,
       fetching: false,
       fetched: true,
-      currentUser: action.payload
+      currentUser: action.payload,
     }
   }
   case "FETCH_USER_PENDING": {

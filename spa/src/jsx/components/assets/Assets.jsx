@@ -5,7 +5,7 @@ import {
   Table,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { fetchAssets } from '../../actions'
+import { fetchAssets } from '../../actions/assets'
 
 class Assets extends Component {
   constructor(props) {
@@ -37,10 +37,31 @@ class Assets extends Component {
     return tableTd;
   }
 
+  remove() {
+    const {
+      currentUser
+    } = this.props.users;
+
+  }
+
+  create() {
+    const {
+      currentUser
+    } = this.props.users;
+
+  }
+
   render() {
     const {
       rows
     } = this.props.assets;
+
+    const {
+      currentUser
+    } = this.props.users;
+
+    const canEdit = currentUser.permissions.find(permission => permission.tag === 'putAssets') || false;
+    const canRemove = currentUser.permissions.find(permission => permission.tag === 'deleteAssets') || false;
 
     const headers = [
       {caption: 'Name', field: 'name'},
@@ -61,8 +82,8 @@ class Assets extends Component {
           <tr key={index} >
           <td><FontAwesomeIcon icon={['fal', 'circle']} className={'text-success'} /></td>
           {this.renderRows(headers, asset)}
-          <td><Link to={link} ><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></Link></td>
-          <td><FontAwesomeIcon icon={['fal', 'trash']} className={'text-danger'} /></td>
+          <td>{ canEdit && (<Link to={link} ><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></Link>)}</td>
+          <td>{ canRemove && (<FontAwesomeIcon icon={['fal', 'trash']} className={'text-danger'} />)}</td>
         </tr>
         )
       });
@@ -103,7 +124,8 @@ class Assets extends Component {
 
 const mapStoreToProps = (store) => {
   return {
-    assets: store.assets
+    assets: store.assets,
+    users: store.users,
   }
 }
 

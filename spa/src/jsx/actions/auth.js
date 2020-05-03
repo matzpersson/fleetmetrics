@@ -14,7 +14,9 @@ export function login(user) {
       data: user,
     })
     .then((response) => {
-      axios.defaults.headers.common = {'x-access-token': response.headers['x-auth-token']}
+      const token = response.headers['x-auth-token'];
+      document.cookie = `x-access-token=${token}`;
+      axios.defaults.headers.common = {'x-access-token': token}
       dispatch({type: "FETCH_TOKEN_FULFILLED", payload: {'authenticated': true}})
     })
     .catch((err) => {

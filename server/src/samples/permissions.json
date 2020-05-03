@@ -1,87 +1,21 @@
-/* 1 */
 {
   "role" : "stalker",
   "description" : "View only access to assets, metrics and messages",
   "permissions" : [ 
-      {
-          "assets" : {
-              "view" : true,
-              "delete" : false,
-              "search" : true,
-              "add" : false,
-              "update" : false
-          }
-      }, 
-      {
-          "users" : {
-              "view" : false,
-              "delete" : false,
-              "search" : false,
-              "add" : false,
-              "update" : false
-          }
-      }, 
-      {
-          "metrics" : {
-              "view" : true,
-              "delete" : false,
-              "search" : true,
-              "add" : false,
-              "update" : false
-          }
-      }, 
-      {
-          "messages" : {
-              "view" : true,
-              "delete" : false,
-              "search" : true,
-              "add" : false,
-              "update" : false
-          }
-      }
+    {"url": "/api/current", "method": "GET", "tag": "getCurrent"},
+    {"url": "/api/login", "method": "POST", "tag": "login"},
+    {"url": "/api/assets", "method": "GET", "tag": "getAssets"},
+    {"url": "/api/metrics", "method": "GET", "tag": "getMetrics"}
   ]
 }
-
-/* 2 */
 {
-  "role" : "administrator",
-  "description" : "Full read/write access to all assets, metrics, users and messages",
-  "permissions" : [ 
-      {
-          "assets" : {
-              "view" : true,
-              "delete" : true,
-              "search" : true,
-              "add" : true,
-              "update" : true
-          }
-      }, 
-      {
-          "users" : {
-              "view" : true,
-              "delete" : true,
-              "search" : true,
-              "add" : true,
-              "update" : true
-          }
-      }, 
-      {
-          "messages" : {
-              "view" : true,
-              "delete" : true,
-              "search" : true,
-              "add" : true,
-              "update" : true
-          }
-      }, 
-      {
-          "metrics" : {
-              "view" : true,
-              "delete" : true,
-              "search" : true,
-              "add" : true,
-              "update" : true
-          }
-      }
-  ]
-}
+    "role" : "administrator",
+    "description" : "Full read/write access to all assets, metrics, users and messages",
+    "permissions" : [ 
+      {"url": "/api/current", "method": "GET", "tag": "getCurrent"},
+      {"url": "/api/current", "method": "PUT", "tag": "putCurrent"},
+      {"url": "/api/login", "method": "POST", "tag": "login"},
+      {"url": "/api/assets", "method": "GET", "tag": "getAssets"},
+      {"url": "/api/metrics", "method": "GET", "tag": "getMetrics"}
+    ]
+  }

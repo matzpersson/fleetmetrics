@@ -6,11 +6,14 @@ import AssetDataPoint from './assets/AssetDataPoint';
 const FleetAssetsPanel = (props) => {
   const {
     assets,
-    gauges
+    gauges,
+    toggleFeature,
+    toggleCollapseTopic,
+    assetMeta
   } = props;
 
   const renderGauges = (asset) => {
-    if (gauges) {
+    if (gauges && assetMeta && !assetMeta[asset.key].collapsed) {
       const points = gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
       const realtimePoints = points.map((gauge, index) =>
         <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
@@ -22,11 +25,11 @@ const FleetAssetsPanel = (props) => {
   }
 
   const assetsGauges = assets.rows.map((asset, index) =>
-    <div key={index} className="rounded" >
+    <div key={index}>
       <div className="mt-2 p-2 d-flex justify-content-between bg-primary" style={{backgroundColor:'#222222'}}>
-        <FontAwesomeIcon icon={['fal','eye']} />
+        <FontAwesomeIcon icon={['fal','eye']} onClick={() => toggleFeature(asset.key)}/>
         <small className="">{asset.name.toUpperCase()}</small>
-        <FontAwesomeIcon icon={['fal','minus']} />
+        <FontAwesomeIcon icon={['fal',(assetMeta && assetMeta[asset.key].collapsed ? 'plus' : 'minus')]} onClick={() => toggleCollapseTopic(asset.key)}/>
       </div>
       {renderGauges(asset)}
     </div>

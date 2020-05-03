@@ -13,7 +13,6 @@ import Moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
-
 const AssetPointsTab = (props) => {
   const {
     gauges,
@@ -32,9 +31,6 @@ const AssetPointsTab = (props) => {
   ]
 
   const renderRows = (headers, row) => {
-    
-    let iconColour = "text-success mr-3"
-
     const tableTd = headers.map((header, index) => {
       let cellValue = row[header.field];
       return (<td key={index}>{cellValue}</td>)
@@ -43,14 +39,17 @@ const AssetPointsTab = (props) => {
     return tableTd;
   }
 
-
   const tableHeadTh = headers.map((header, index) =>
     <th key={index}>{header.caption}</th>
   );
 
-  const link = '';
+  const baseUrl = `/asset/${asset._id}/points`;
+  const newLink = `${baseUrl}/new`
+
   const tableBodyTr = gauges.map((gauge, index) => {
     let iconName = "circle";
+    const link = `${baseUrl}/${gauge._id}`;
+
     switch (gauge.gaugeType) {
       case 'dial':
         iconName = 'tachometer';
@@ -62,6 +61,7 @@ const AssetPointsTab = (props) => {
         iconName = 'thermometer';
         break;
     }
+
     return (<tr key={index}>
       <td><FontAwesomeIcon icon={['fal', iconName]} className={'text-success'} /></td>
       {renderRows(headers, gauge)}
@@ -70,7 +70,6 @@ const AssetPointsTab = (props) => {
     </tr>)
   });
 
-  const newLink = `/asset/${asset._id}/points/new`
   return (
     <React.Fragment>
       <TabPane tabId={tabId} className="mb-2 p-3">

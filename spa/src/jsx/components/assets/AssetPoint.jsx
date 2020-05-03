@@ -15,8 +15,8 @@ import {
 } from 'reactstrap';
 
 import {
-  fetchAsset
-} from "../../actions"
+  fetchAssetPoint
+} from "../../actions/assets"
 
 class AssetPoint extends React.Component {
   constructor(props) {
@@ -55,12 +55,13 @@ class AssetPoint extends React.Component {
   componentWillMount() {
     const matchArray = this.props.match.url.split('/');
     const assetId = matchArray[2];
+    const pointId = this.props.match.params.id
 
     this.setState({
       assetId
     })
 
-    this.props.dispatch(fetchAsset(assetId))
+    this.props.dispatch(fetchAssetPoint(pointId))
 
     this.setModels()
   }

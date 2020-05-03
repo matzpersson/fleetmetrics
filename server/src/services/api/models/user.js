@@ -26,6 +26,11 @@ var userSchema = mongoose.Schema({
     type: Object,
     default: []
   },
+  role: {
+    type: String,
+    required: true,
+    default: 'stalker'
+  },
   created: {
     type: Date,
     default: Date.now
@@ -33,7 +38,7 @@ var userSchema = mongoose.Schema({
 }, { versionKey: false });
 
 userSchema.methods.generateAuthToken = function() { 
-  const token = jwt.sign({ _id: this._id, email: this.email }, process.env.LOGIN_SECRET); 
+  const token = jwt.sign({ _id: this._id, role: this.role }, process.env.LOGIN_SECRET); 
   return token;
 }
 

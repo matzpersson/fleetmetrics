@@ -38,6 +38,7 @@ exports.new = function (req, res) {
 
 // Handle findById
 exports.view = function (req, res) {
+  console.log("asset id". req)
   Asset.findById(req.params.id, function (err, asset) {
     if (err)
       res.send(err);
@@ -53,10 +54,10 @@ exports.update = function (req, res) {
   Asset.findById(req.params.id, function (err, asset) {
     if (err) res.send(err);
     asset.key = req.body.key ? req.body.key : asset.key;
-    asset.name = req.body.name;
-    asset.models = req.body.models;
-    asset.gauges = req.body.gauges;
-    asset.sentenceType = req.body.sentenceType;
+    asset.name = req.body.name ? req.body.name : asset.name;
+    asset.models = req.body.models ? req.body.models : asset.models;
+    asset.gauges = req.body.gauges ? req.body.gauges : asset.gauges;
+    asset.sentenceType = req.body.sentenceType ? req.body.sentenceType : asset.sentenceType;
 
     asset.save(function (err) {
         if (err)

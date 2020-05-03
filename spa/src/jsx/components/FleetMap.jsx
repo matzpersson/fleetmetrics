@@ -45,17 +45,37 @@ class FleetMap extends React.Component {
       iconFeature: {},
       assetLayer: null,
       map:{},
-      sidePanelOpen:false
+      sidePanelOpen:false,
+      assetMeta: null
     }
 
     this.toggleSidePanel = this.toggleSidePanel.bind(this);
     this.zoomExtent = this.zoomExtent.bind(this);
+    this.toggleFeature = this.toggleFeature.bind(this);
+    this.toggleCollapseTopic = this.toggleCollapseTopic.bind(this);
   }
 
  componentDidMount() {
     this.renderMap(); 
   }
 
+  componentDidUpdate() {
+    let {
+      assetMeta
+    } = this.state;
+
+    if (!assetMeta && this.props.assets.rows.length > 0) {
+      assetMeta = {}
+      this.props.assets.rows.forEach(asset => {
+        assetMeta[asset.key] = {visible: true, collapsed: false}
+      })
+      console.log("COMPONENT update on assets", assetMeta)
+      this.setState({
+        assetMeta
+      })
+    }
+
+  }
   toggleSidePanel() {
     this.setState({sidePanelOpen: !this.state.sidePanelOpen})
   }
@@ -190,8 +210,8 @@ class FleetMap extends React.Component {
         assetFeature.set('lastCoord', {lat:0, lng:0});
       }
 
-      let trailPoints = assetFeature.get('trailPoints');
-      trailPoints.push(fromLonLat([ parseFloat(metric.data.lon), parseFloat(metric.data.lat)] ))
+      // let trailPoints = assetFeature.get('trailPoints');
+      // trailPoints.push(fromLonLat([ parseFloat(metric.data.lon), parseFloat(metric.data.lat)] ))
 
       const coordNow = transform(assetFeature.getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
       const coordPrev = transform(assetFeature.get('lastCoord'), 'EPSG:3857', 'EPSG:4326');
@@ -229,9 +249,9 @@ class FleetMap extends React.Component {
         assetFeature.setStyle(imageStyle);
       }
 
-      let trailFeature = this.renderTrail(metric, assetFeature)
+      // let trailFeature = this.renderTrail(metric, assetFeature)
+      // features.push(trailFeature);
 
-      features.push(trailFeature);
       features.push(assetFeature);
       assetLayer.setSource(
         new VectorSource({
@@ -329,9 +349,39 @@ class FleetMap extends React.Component {
     // this.renderSensor()
   }
 
+  toggleFeature(topic) {
+    
+    let {
+      assetLayer
+    } = this.state;
+
+    let source = assetLayer.getSource();
+    var feature = source.getFeatureById(topic);
+    if (feature) {
+      console.log("Remove TOPIC", topic, feature)
+      source.removeFeature(feature)
+      this.zoomExtent();
+    } else {
+
+    }
+  }
+
+  toggleCollapseTopic(topic) {
+    const {
+      assetMeta
+    } = this.state;
+
+    assetMeta[topic].collapsed = !assetMeta[topic].collapsed;
+
+    this.setState({
+      assetMeta
+    })
+  }
+
   render() {
     const {
-      lastClick
+      lastClick,
+      assetMeta
     } = this.state;
 
     this.renderAssetMovement();
@@ -339,14 +389,13 @@ class FleetMap extends React.Component {
     return (
       <div className="p-0 m-0 h-100 d-flex flex-column">
         <Row className="p-0 m-0 flex-grow-1">
-          <Col className="p-0 m-0">
+          <Col className="p-0 m-0 h-100">
             <div className="h-100" ref="mapContainer" id="mapContainer"></div>
           </Col>
           <Col sm={2} className="listview">
-            <FleetAssetsPanel assets={this.props.assets} gauges={this.props.gauges} />
+            <FleetAssetsPanel assets={this.props.assets} gauges={this.props.gauges} toggleFeature={this.toggleFeature} assetMeta={assetMeta} toggleCollapseTopic={this.toggleCollapseTopic}/>
           </Col>
         </Row>
-        
         <div className="p-2 bg-primary text-light d-flex justify-content-between" style={{fontSize: 14}}>
           <div id="mouse-position"></div>
 

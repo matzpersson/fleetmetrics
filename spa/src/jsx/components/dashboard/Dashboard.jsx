@@ -69,7 +69,6 @@ class Dashboard extends React.Component {
 
   generateDOM() {
     const openSidePanel = this.openSidePanel;
-    console.log("LAYOUT", this.state.layout)
     return this.state.layout.map((cell, index) => {
       return (
         <div key={index} className="react-grid-layout-panel">
@@ -94,12 +93,19 @@ class Dashboard extends React.Component {
   }
 
   onLayoutChange(newLayout) {
+    const {
+      currentUser
+    } = this.props.users;
+
     const dashboard = newLayout.map((cell, index) => {
       cell.gid = this.state.layout[index].gid;
       return cell;
     })
 
-    this.props.dispatch(saveUserDashboard(dashboard));
+    const allowed = currentUser.permissions.find(permission => permission.tag === 'putCurrent');
+    if (allowed) {
+      this.props.dispatch(saveUserDashboard(dashboard));
+    }
   }
 
   setLayout() {

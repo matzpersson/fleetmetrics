@@ -10,7 +10,7 @@ import AssetDataPoint from './assets/AssetDataPoint';
 
 import { putMetrics } from "../actions/"
 import { fetchCurrentUser } from "../actions/users"
-import { fetchAssets } from '../actions'
+import { fetchAssets } from '../actions/assets'
 
 import { 
   Row,

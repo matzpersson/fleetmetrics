@@ -32,7 +32,10 @@ export function fetchCurrentUser() {
       url: currentUrl
     })
     .then((response) => {
-        dispatch({type: "FETCH_CURRENT_FULLFILLED", payload: response.data.data});
+        console.log("RESPONSE USER", response)
+        const payload = response.data.data;
+        payload.permissions = response.data.permissions
+        dispatch({type: "FETCH_CURRENT_FULLFILLED", payload: payload});
     })
     .catch((err) => {
       console.log('Error - ', err)

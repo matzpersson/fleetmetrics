@@ -17,7 +17,7 @@ import AssetPointsTab from "./AssetPointsTab";
 import {
   fetchAsset,
   updateAsset,
-} from "../../actions"
+} from "../../actions/assets"
 
 class Asset extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class Asset extends React.Component {
     this.toggleGaugeEditor = this.toggleGaugeEditor.bind(this);
     this.updateGauge = this.updateGauge.bind(this);
 
-    // this.onCancel = this.onCancel.bind(this);
+    this.onCancel = this.onCancel.bind(this);
     // this.onDelete = this.onDelete.bind(this);
     // this.editUser = this.editUser.bind(this);
     // this.removeInvite = this.removeInvite.bind(this);
@@ -81,15 +81,12 @@ class Asset extends React.Component {
       asset
     } = this.state;
 
-    // this.props.dispatch(updateOrg(org));
-    // this.props.history.goBack(this.state.goBackLink);
+    this.props.dispatch(updateAsset(asset));
+    this.props.history.goBack(this.state.goBackLink);
   }
 
   onCancel() {
-    const {
-      history
-    } = this.props;
-    history.goBack();
+    this.props.history.goBack(this.state.goBackLink);
   }
 
   onDelete() {
