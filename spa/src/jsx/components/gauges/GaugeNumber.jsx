@@ -1,19 +1,21 @@
 import React from 'react';
 import AnimatedNumber from 'react-animated-number';
+import { HalfCircleSpinner } from 'react-epic-spinners';
 
 const GaugeNumber = (props) => {
   const {
     gauge,
-    fontSize
+    fontSize,
+    spinnerSize
   } = props;
 
   const prettyString = (n) => {
     return gauge.textValue;
   }
 
-  
   return (
     <React.Fragment>
+      { gauge.value && (
         <AnimatedNumber 
           component="text" 
           value={gauge.value}
@@ -32,7 +34,13 @@ const GaugeNumber = (props) => {
           duration={300}
           formatValue={n => prettyString(n)}
         />
+      )}
+      { !gauge.value && (
+        <div className="d-flex justify-content-center bg-warnings">
+          <HalfCircleSpinner color="#4285f4" size={spinnerSize} />
+        </div>
 
+      )}
     </React.Fragment>
   )
 }

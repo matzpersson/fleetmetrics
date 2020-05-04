@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
 import classnames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { 
   Nav,
@@ -15,8 +14,7 @@ import AssetPointsTab from "./AssetPointsTab";
 
 import {
   fetchAsset,
-  updateAsset,
-  fetchAssets
+  updateAsset
 } from "../../actions/assets"
 
 class Asset extends React.Component {
@@ -49,7 +47,6 @@ class Asset extends React.Component {
       match
     } = this.props;
 
-    console.log("WILLMOUNT")
     this.props.dispatch(fetchAsset(match.params.id))
   }
 
@@ -59,7 +56,7 @@ class Asset extends React.Component {
       serial
     } = this.props.assets;
 
-    console.log("UDPATE component", this.state.serial, serial)
+    console.log("current", this.state.asset, current)
     if (this.state.asset._id !== current._id || this.state.serial !== serial) {
       this.setState({
         asset: current,
@@ -114,7 +111,6 @@ class Asset extends React.Component {
       const idx = asset.gauges.findIndex(gauge => gauge._id === id);
       
       asset.gauges.splice(idx, 1);
-      console.log("IDX", idx, asset)
       this.props.dispatch(updateAsset(asset));
 
       this.setState({
@@ -161,8 +157,7 @@ class Asset extends React.Component {
 
   render() {
     const {
-      asset,
-      point
+      asset
     } = this.state;
 
     const {

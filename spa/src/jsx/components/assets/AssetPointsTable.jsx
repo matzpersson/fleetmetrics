@@ -1,8 +1,6 @@
 import React from 'react';
 import { 
-  Table,
-  TabPane,
-  Button
+  Table
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
@@ -38,19 +36,20 @@ const AssetPointsTab = (props) => {
   );
 
   const baseUrl = `/asset/${asset._id}/points`;
-  const newLink = `${baseUrl}/new`
 
   let tableBodyTr = (
-    <div className="p-5 text-center">
-      <div><FontAwesomeIcon size="3x" icon={['fal', 'circle']} className="text-primary"/></div>
-      <div className="mt-3">No Data Points found.</div>
-    </div>
+    <tr>
+      <td colspan={headers.length + 4}>
+        <div className="p-5 text-center">
+          <div><FontAwesomeIcon size="3x" icon={['fal', 'circle']} className="text-primary"/></div>
+          <div className="mt-3">No Data Points found.</div>
+        </div>
+      </td>
+    </tr>
   )
 
-  const canView = currentUser.permissions.find(permission => permission.tag === 'getAssets') || false;
-  const canCreate = currentUser.permissions.find(permission => permission.tag === 'postAssets') || false;
   const canRemove = currentUser.permissions.find(permission => permission.tag === 'deleteAssets') || false;
-
+  console.log("ASSET", asset, asset.gauges)
   if (asset && asset.gauges) {
     tableBodyTr = asset.gauges.map((gauge, index) => {
       let iconName = "circle";

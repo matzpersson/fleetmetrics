@@ -1,10 +1,8 @@
 import React from 'react';
 import { 
-  Table,
   TabPane,
   Button
 } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import AssetPointsTable from './AssetPointsTable';
 
@@ -21,6 +19,7 @@ const AssetPointsTab = (props) => {
   const baseUrl = `/asset/${asset._id}/points`;
   const newLink = `${baseUrl}/new`
 
+  console.log("TAB", asset, asset.gauges)
   return (
     <React.Fragment>
       <TabPane tabId={tabId} className="mb-2 p-3">

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { routes } from '../constants/routes';
 import AppMenuItem from './AppMenuItem';
-import AppFilterItem from './AppFilterItem';
-import logo from '../../images/logo.png';
 import { connect } from "react-redux";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import socketIOClient from "socket.io-client";
@@ -34,7 +32,7 @@ class Base extends Component {
       endpoint: endpoint
     };
 
-    this.renderGauges = this. renderGauges.bind(this);
+    this.renderGauges = this.renderGauges.bind(this);
   }
 
   componentDidMount() {
@@ -61,7 +59,6 @@ class Base extends Component {
 
   render() {
     const {
-      match,
       location
     } = this.props;
 
@@ -89,13 +86,6 @@ class Base extends Component {
             <AppMenuItem url="/metrics" caption="Stream" iconName="stream" location={location} />
             <AppMenuItem url="/statistics" caption="Statistics" iconName="chart-line" location={location} />
           </ul>
-
-          {/* <div className="section-header mt-3">
-            <span className="section-title text-bold text-light">METRIC WATCH</span>
-          </div>
-          <div className="m-2">
-            {assetsGauges}
-          </div> */}
 
         </Col>
         <Col className="addScroll m-0 p-0">

@@ -1,12 +1,10 @@
 import React from 'react';
 import { connect } from "react-redux";
-import GaugeProgress from '../gauges/GaugeProgress';
 import GaugeNumber from '../gauges/GaugeNumber';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ChartLine from '../charts/ChartLine';
 import ChartBar from '../charts/ChartBar';
 import { fetchMetricsModelRange } from '../../actions/metrics';
-import { HalfCircleSpinner } from 'react-epic-spinners';
 
 class AssetDataPoint extends React.Component {
   constructor(props) {
@@ -31,7 +29,7 @@ class AssetDataPoint extends React.Component {
         fieldName: null,
         valueSuffix: 'm',
         gaugeType: 'number',
-        value: 0,
+        value: null,
         minValue: 0,
         maxValue: 100,
         minAlert: 30,
@@ -81,7 +79,6 @@ class AssetDataPoint extends React.Component {
     }
 
     if (gauge) {
-      gauge.value = 0;
       gauge.default = (gauge.default ? gauge.default : 'gauge');
     }
 
@@ -100,14 +97,29 @@ class AssetDataPoint extends React.Component {
       ranges
     } = this.props.metrics;
 
-    const {
+    let {
       gauge,
       assetKey,
+      assetName,
       showChart,
       chart
     } = this.state;
 
-    if (metric && metric.sentenceModel === gauge.model && metric.topic === assetKey && gauge.fieldName in metric.data) {
+    if (gauge.name !== this.props.assetGauge.gauge.name) {
+      gauge = this.props.assetGauge.gauge;
+      assetKey = this.props.assetGauge.assetKey;
+      assetName = this.props.assetGauge.assetName;
+
+      this.setState({
+        gauge,
+        assetKey,
+        assetName
+      })
+    }
+
+    // console.log("assetkey", metric.sentenceModel, gauge.model,this.props.assetGauge)
+    if (metric && metric.sentenceModel === this.props.assetGauge.gauge.model && metric.topic === this.props.assetGauge.assetKey && gauge.fieldName in metric.data) {
+      console.log("UPDATE")
       const value = parseFloat(metric.data[gauge.fieldName]);
       if (value !== gauge.value){
         gauge.value = value;
@@ -159,7 +171,10 @@ class AssetDataPoint extends React.Component {
       }
     }
 
-    gauge.textValue = `${gauge.value.toFixed(gauge.decimals)}${gauge.valueSuffix}`;
+    if (gauge.value) {
+      gauge.textValue = `${gauge.value.toFixed(gauge.decimals)}${gauge.valueSuffix}`;
+    }
+
     gauge.gaugeColour = '#4285f4';
     gauge.gaugePanel = 'bg-primary';
     gauge.alertMessage = null;
@@ -170,14 +185,14 @@ class AssetDataPoint extends React.Component {
     }
 
     // Set Min Alert
-    if (gauge.minAlert > gauge.value && gauge.minAlert != -1) {
+    if (gauge.minAlert > gauge.value && gauge.minAlert !== -1) {
       gauge.alertMessage = 'Alert - value is too LOW';
       gauge.gaugeColour = '#ea4335';
       gauge.gaugePanel = 'bg-danger';
     } 
 
     // Set Max Alert
-    if (gauge.maxAlert < gauge.value && gauge.maxAlert != -1) {
+    if (gauge.maxAlert < gauge.value && gauge.maxAlert !== -1) {
       gauge.alertMessage = 'Alert - value is too HIGH';
       gauge.gaugeColour = '#ea4335';
       gauge.gaugePanel = 'bg-danger';
@@ -191,7 +206,7 @@ class AssetDataPoint extends React.Component {
     })
   }
 
-  selectGauge(type) {
+  selectGauge(type, spinnerSize) {
     const {
       gauge
     } = this.state;
@@ -202,7 +217,8 @@ class AssetDataPoint extends React.Component {
       // case 'number':
       //   return (<GaugeNumber gauge={gauge}/>);
       default:
-        return (<GaugeNumber gauge={gauge}/>);
+        return (
+          <GaugeNumber gauge={gauge} spinnerSize={spinnerSize} />);
     }
   }
 
@@ -236,7 +252,7 @@ class AssetDataPoint extends React.Component {
         return (
           <div className="d-flex justify-content-between p-2">
             <span style={{fontSize: 12}}>{gauge.name}</span>
-            <GaugeNumber gauge={gauge} fontSize={12}/>
+            <GaugeNumber gauge={gauge} fontSize={12} spinnerSize={12}/>
           </div>
         )
       case 'cell':
@@ -254,7 +270,7 @@ class AssetDataPoint extends React.Component {
               </span>
             </div>
 
-            {(showChart ? this.selectChart(gauge.chartType) : this.selectGauge(gauge.gaugeType))}
+            {(showChart ? this.selectChart(gauge.chartType) : this.selectGauge(gauge.gaugeType, 30))}
 
             <div className="p-1">
               { gauge.alertMessage && (

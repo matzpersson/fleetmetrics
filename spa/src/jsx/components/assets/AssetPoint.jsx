@@ -1,11 +1,8 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AssetDataPoint from './AssetDataPoint';
 
 import { 
-  Table,
-  TabPane,
   Button,
   Row,
   Col,
@@ -32,11 +29,11 @@ class AssetPoint extends React.Component {
       point: {
         name: 'New Data Point',
         textValue: '',
-        modelName: 'n/a',
+        model: 'n/a',
         fieldName: 'field-0',
         valueSuffix: 'm',
         gaugeType: 'number',
-        value: 0,
+        value: null,
         minValue: 0,
         maxValue: 100,
         minAlert: 30,
@@ -55,7 +52,7 @@ class AssetPoint extends React.Component {
   }
 
   componentWillMount() {
-    const {
+    let {
       asset
     } = this.state;
 
@@ -115,8 +112,7 @@ class AssetPoint extends React.Component {
     const {
       asset,
       point,
-      id,
-      goBackDefaultLink
+      id
     } = this.state;
 
     if (id === 'new') {
@@ -140,13 +136,19 @@ class AssetPoint extends React.Component {
   onDelete() {
     const {
       asset,
-      point
+      id
     } = this.state;
 
     const success = window.confirm('Removing this Data Point permanently. Continue?');
     if (success) {
-      // this.props.dispatch(removeUser(user.id));
-      this.props.history.goBack();
+      const idx = asset.gauges.findIndex(gauge => gauge._id === id);
+      
+      asset.gauges.splice(idx, 1);
+      this.props.dispatch(updateAsset(asset));
+
+      this.setState({
+        asset
+      })
     }
   }
 
@@ -156,8 +158,8 @@ class AssetPoint extends React.Component {
       asset
     } = this.state;
 
-    const { 
-      current
+    const {
+      current,
     } = this.props.assets;
 
     let modelList = null;
@@ -167,7 +169,7 @@ class AssetPoint extends React.Component {
       )
     }
 
-    const assetGauge = {gauge: point, assetName: asset.name, assetKey: asset.key}
+    const assetGauge = {gauge: point, assetKey: asset.key, assetName: asset.name};
 
     // -- Set permissions visibility
     const canUpdate = this.props.users.currentUser.permissions.find(permission => permission.tag === 'putAssets') || false;
@@ -339,7 +341,8 @@ class AssetPoint extends React.Component {
 const mapStoreToProps = (store) => {
   return {
     assets: store.assets,
-    users: store.users
+    users: store.users,
+    metrics: store.metrics
   }
 }
 

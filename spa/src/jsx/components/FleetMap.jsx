@@ -14,7 +14,6 @@ import WKT from 'ol/format/WKT';
 import Point from 'ol/geom/Point';
 import {Vector as VectorSource, Cluster} from 'ol/source';
 import {Vector as VectorLayer, Heatmap} from 'ol/layer';
-import SlidingPanel from 'react-sliding-side-panel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   Row,
@@ -402,21 +401,9 @@ class FleetMap extends React.Component {
           <div className="d-flex">
             <FontAwesomeIcon icon={['fal', 'expand']} className={'text-white mr-3'} title="Zoom Extent" onClick={this.zoomExtent} />
             <FontAwesomeIcon icon={['fal', 'stream']} className={'text-white mr-3'} title="Sentence stream"/>
-            <FontAwesomeIcon icon={['fal', 'cog']} className={'text-white mr-3'} title="Settings" onClick={this.toggleSidePanel} />
             <div>Click Lat/Lng: <span className="text-warning">{lastClick}</span></div>
           </div>
-          
         </div>
-        <SlidingPanel
-          type={'right'}
-          isOpen={this.state.sidePanelOpen}
-          size={10}
-        >
-          <div className="listview w-100">
-            <div>Settings maybe</div>
-            <button onClick={this.toggleSidePanel}>close</button>
-          </div>
-        </SlidingPanel>
       </div>
     );
   }

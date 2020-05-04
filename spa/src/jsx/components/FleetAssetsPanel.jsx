@@ -1,12 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AssetDataPoint from './assets/AssetDataPoint';
 
 const FleetAssetsPanel = (props) => {
   const {
     assets,
-    gauges,
     toggleFeature,
     toggleCollapseTopic,
     assetMeta

@@ -1,9 +1,5 @@
 import React from 'react';
-import { 
-  Label
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
 
 const DashboardPoints = (props) => {
   const {

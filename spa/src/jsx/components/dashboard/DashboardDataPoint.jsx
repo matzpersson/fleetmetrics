@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AssetDataPoint from '../assets/AssetDataPoint';
-import { 
-  Row
-} from 'reactstrap';
 
 class DashboardDataPoint extends Component {
   render() {
