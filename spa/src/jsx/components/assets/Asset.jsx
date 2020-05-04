@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { 
-  Button,
   Nav,
   NavItem,
   NavLink,
@@ -17,6 +16,7 @@ import AssetPointsTab from "./AssetPointsTab";
 import {
   fetchAsset,
   updateAsset,
+  fetchAssets
 } from "../../actions/assets"
 
 class Asset extends React.Component {
@@ -27,6 +27,7 @@ class Asset extends React.Component {
       activeTab: '1',
       goBackDefaultLink: '/assets',
       id: props.match.params.id,
+      point: {},
       asset: {
         _id: null,
       },
@@ -36,13 +37,11 @@ class Asset extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.onSave = this.onSave.bind(this);
-    this.toggleGaugeEditor = this.toggleGaugeEditor.bind(this);
-    this.updateGauge = this.updateGauge.bind(this);
-
     this.onCancel = this.onCancel.bind(this);
-    // this.onDelete = this.onDelete.bind(this);
-    // this.editUser = this.editUser.bind(this);
-    // this.removeInvite = this.removeInvite.bind(this);
+    this.onDelete = this.onDelete.bind(this);
+    this.onSavePoint = this.onSavePoint.bind(this);
+    this.onSelectPoint = this.onSelectPoint.bind(this);
+    this.onDeletePoint = this.onDeletePoint.bind(this);
   }
 
   componentWillMount() {
@@ -50,17 +49,21 @@ class Asset extends React.Component {
       match
     } = this.props;
 
+    console.log("WILLMOUNT")
     this.props.dispatch(fetchAsset(match.params.id))
   }
 
   componentDidUpdate() {
     const {
-      current
+      current,
+      serial
     } = this.props.assets;
 
-    if (this.state.asset._id !== current._id) {
+    console.log("UDPATE component", this.state.serial, serial)
+    if (this.state.asset._id !== current._id || this.state.serial !== serial) {
       this.setState({
-        asset: current
+        asset: current,
+        serial
       })
     }
   }
@@ -101,6 +104,53 @@ class Asset extends React.Component {
     // }
   }
 
+  onDeletePoint(id) {
+    const {
+      asset
+    } = this.state;
+
+    const success = window.confirm('Removing this Data Point permanently. Continue?');
+    if (success) {
+      const idx = asset.gauges.findIndex(gauge => gauge._id === id);
+      
+      asset.gauges.splice(idx, 1);
+      console.log("IDX", idx, asset)
+      this.props.dispatch(updateAsset(asset));
+
+      this.setState({
+        asset
+      })
+    }
+  }
+
+  onSelectPoint(id) {
+    const {
+      asset,
+      point
+    } = this.props;
+
+    point = asset.gauges.find(gauge => gauge._id === id);
+
+    this.setState({
+      point
+    })
+  }
+
+  onSavePoint(point, id) {
+    const {
+      asset
+    } = this.state;
+
+    if (id === 'new') {
+      asset.gauges.push(point);
+    } else {
+      const idx = asset.gauges.findIndex(gauge => gauge._id === id);
+      asset.gauges.splice(idx, 1, point);
+    }
+
+    this.props.dispatch(updateAsset(asset));
+  }
+
   toggle(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -109,52 +159,16 @@ class Asset extends React.Component {
     }
   }
 
-  updateGauge() {
-
-    this.toggleGaugeEditor()
-  }
-  toggleGaugeEditor() {
-    this.setState({
-      showGaugeEditor: !this.state.showGaugeEditor
-    });
-    console.log("toggle editor", this.state.showGaugeEditor)
-  }
-
-  // editUser(user) {
-  //   const lnk = `/home/users/${user.id}`;
-  //   this.props.history.push(lnk);
-  // }
-
-  // removeInvite(user) {
-  //   this.setState({
-  //     submitting: true,
-  //     errorMessage: null
-  //   })
-
-  //   const success = window.confirm('Removing this user permanently. Continue?');
-  //   if (success) {
-  //     // this.props.dispatch(removeInvite(user.id))
-  //   }
-    
-  // }
-
-  renderGauges(headers, user) {
-    // const iconName = "user";
-    // const iconColour = "text-success mr-3"
-    // const tableTd = headers.map((header, index) =>
-    //   <td key={index}>{(index === 0 ? <FontAwesomeIcon icon={['fal', iconName]} className={iconColour} /> : null)}{user[header.field]}</td>
-    // );
-
-    // return tableTd;
-  }
-
   render() {
     const {
       asset,
-      showGaugeEditor
+      point
     } = this.state;
 
-    const gauges = (asset.gauges ? asset.gauges : [] );
+    const {
+      currentUser
+    } = this.props.users;
+
     return (
       <div className="p-3 form">
         <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">{asset.name}</h3>
@@ -179,7 +193,7 @@ class Asset extends React.Component {
         </Nav>
         <TabContent activeTab={this.state.activeTab} className="border-bottom border-primary">
           <AssetProfileTab tabId="1" asset={asset} handleChange={this.handleChange} onSave={this.onSave} onCancel={this.onCancel} />
-          <AssetPointsTab tabId="2" asset={asset} gauges={gauges} renderGauges={this.renderGauges} />
+          <AssetPointsTab tabId="2" asset={asset} currentUser={currentUser} onSavePoint={this.onSavePoint} onDeletePoint={this.onDeletePoint} />
         </TabContent>
       </div>
     );
@@ -188,7 +202,8 @@ class Asset extends React.Component {
 
 const mapStoreToProps = (store) => {
   return {
-    assets: store.assets
+    assets: store.assets,
+    users: store.users
   }
 }
 

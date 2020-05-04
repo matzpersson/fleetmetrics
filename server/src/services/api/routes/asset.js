@@ -16,6 +16,5 @@ router.route('/assets/:id')
   .put(auth, assetController.update)
   .delete(auth, assetController.delete);
 
-
 // Export API routes
 module.exports = router;

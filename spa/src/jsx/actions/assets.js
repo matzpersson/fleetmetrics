@@ -14,7 +14,6 @@ export function updateAsset(data) {
       data
     })
     .then((response) => {
-      // const payload = {data: response.data, id: cluster.id}
       console.log("SAVE ASSET", data)
       dispatch({type: "UPDATE_ASSET_FULLFILLED", payload: response.data.data});
     })
@@ -35,7 +34,6 @@ export function fetchAssets() {
       url: assetUrl,
     })
     .then((response) => {
-      // const payload = {data: response.data, id: cluster.id}
       dispatch({type: "FETCH_ASSETS_FULLFILLED", payload: response.data.data});
       dispatch({type: "FETCH_GAUGES_FULLFILLED", payload: response.data.data});
     })

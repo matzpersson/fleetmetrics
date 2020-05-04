@@ -46,7 +46,7 @@ class Base extends Component {
 
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    // socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
+    socket.on("FromAPI", data => this.props.dispatch(putMetrics(data)));
   }
 
   renderGauges(asset) {

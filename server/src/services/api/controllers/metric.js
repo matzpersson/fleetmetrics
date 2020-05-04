@@ -65,13 +65,13 @@ exports.new = function (req, res) {
 // Handle findById
 exports.view = function (req, res) {
   Metric.findById(req.params.id, function (err, metric) {
-        if (err)
-            res.send(err);
-        res.json({
-            metric: 'Success..',
-            data: metric
-        });
-    });
+      if (err)
+          res.send(err);
+      res.json({
+          metric: 'Success..',
+          data: metric
+      });
+  });
 };
 
 // Handle updateById

@@ -97,9 +97,7 @@ class AssetDataPoint extends React.Component {
   componentDidUpdate() {
     const {
       metric,
-      ranges,
-      fetching,
-      fetched
+      ranges
     } = this.props.metrics;
 
     const {
@@ -109,7 +107,7 @@ class AssetDataPoint extends React.Component {
       chart
     } = this.state;
 
-    if (metric && metric.sentenceModel === gauge.modelName && metric.topic === assetKey && gauge.fieldName in metric.data) {
+    if (metric && metric.sentenceModel === gauge.model && metric.topic === assetKey && gauge.fieldName in metric.data) {
       const value = parseFloat(metric.data[gauge.fieldName]);
       if (value !== gauge.value){
         gauge.value = value;

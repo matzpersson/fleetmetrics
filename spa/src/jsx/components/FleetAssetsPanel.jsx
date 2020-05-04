@@ -13,13 +13,21 @@ const FleetAssetsPanel = (props) => {
   } = props;
 
   const renderGauges = (asset) => {
-    if (gauges && assetMeta && !assetMeta[asset.key].collapsed) {
-      const points = gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
-      const realtimePoints = points.map((gauge, index) =>
-        <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
-          <AssetDataPoint assetGauge={gauge} wrap="row"/>
-        </div>
-      );
+    if (asset && assetMeta && !assetMeta[asset.key].collapsed) {
+      // const points = gauges.rows.showInMenu.filter(gauge => gauge.assetId === asset._id)
+      const realtimePoints = asset.gauges.map((gauge, index) => {
+        const assetGauge={
+          assetKey: asset.key,
+          assetId: asset._id,
+          assetName: asset.name,
+          gauge: gauge
+        }
+        return (
+          <div key={index} style={{backgroundColor: '#333333', marginBottom: 1}} >
+            <AssetDataPoint assetGauge={assetGauge} wrap="row"/>
+          </div>
+        )
+      });
       return (realtimePoints);
     }
   }

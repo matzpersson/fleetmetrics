@@ -15,7 +15,8 @@ import {
 } from 'reactstrap';
 
 import {
-  fetchAssetPoint
+  fetchAsset,
+  updateAsset
 } from "../../actions/assets"
 
 class AssetPoint extends React.Component {
@@ -27,8 +28,9 @@ class AssetPoint extends React.Component {
       goBackDefaultLink: '/assets',
       id: props.match.params.id,
       assetId: null,
-      gauge: {
-        name: 'New Gauge',
+      asset: {},
+      point: {
+        name: 'New Data Point',
         textValue: '',
         modelName: 'n/a',
         fieldName: 'field-0',
@@ -46,63 +48,86 @@ class AssetPoint extends React.Component {
       models: null
     };
 
-    // this.onCancel = this.onCancel.bind(this);
-    // this.onDelete = this.onDelete.bind(this);
-    // this.editUser = this.editUser.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.onDelete = this.onDelete.bind(this);
+    this.onSave = this.onSave.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
+    const {
+      asset
+    } = this.state;
+
+    if (this.props.asset) {
+      asset = this.props.asset
+    }
+
     const matchArray = this.props.match.url.split('/');
     const assetId = matchArray[2];
-    const pointId = this.props.match.params.id
 
     this.setState({
       assetId
     })
 
-    this.props.dispatch(fetchAssetPoint(pointId))
-
-    this.setModels()
+    this.props.dispatch(fetchAsset(assetId))
   }
 
   componentDidUpdate() {
-    this.setModels()
+    this.setAsset();
   }
 
-  setModels() {
+  setAsset() {
     const {
-      current
+      current,
     } = this.props.assets;
 
-    const {
-      models
+    let {
+      asset,
+      point,
+      id
     } = this.state;
 
-    if (current && current.models !== models) {
+    if (current && current._id !== asset._id) {
+      if (id !== 'new') {
+        point = current.gauges.find(gauge => gauge._id === id);
+      }
+      
       this.setState({
-        models: current.models
+        asset: current,
+        point
       })
+
     }
   }
 
   handleChange(element){
-    const gauge = this.state.gauge;
-    gauge[element.target.id] = element.target.value;
+    const point = this.state.point;
+    point[element.target.id] = element.target.value;
     if (element.target) {
       this.setState({
-        gauge,
+        point,
       })
     }
   }
 
   onSave() {
     const {
-      asset
+      asset,
+      point,
+      id,
+      goBackDefaultLink
     } = this.state;
 
-    // this.props.dispatch(updateOrg(org));
-    // this.props.history.goBack(this.state.goBackLink);
+    if (id === 'new') {
+      asset.gauges.push(point);
+    } else {
+      const idx = asset.gauges.findIndex(gauge => gauge._id === id);
+      asset.gauges.splice(idx, 1, point);
+    }
+
+    this.props.dispatch(updateAsset(asset));
+    this.props.history.goBack();
   }
 
   onCancel() {
@@ -113,21 +138,22 @@ class AssetPoint extends React.Component {
   }
 
   onDelete() {
-    // const {
-    //   org
-    // } = this.state;
+    const {
+      asset,
+      point
+    } = this.state;
 
-    // const success = window.confirm('Removing this Business permanently with all its users, jobs and manuals. Continue?');
-    // if (success) {
-    //   this.props.dispatch(removeUser(user.id));
-    //   this.props.history.goBack(this.state.goBackLink);
-    // }
+    const success = window.confirm('Removing this Data Point permanently. Continue?');
+    if (success) {
+      // this.props.dispatch(removeUser(user.id));
+      this.props.history.goBack();
+    }
   }
 
   render() {
     const {
-      gauge,
-      models
+      point,
+      asset
     } = this.state;
 
     const { 
@@ -135,18 +161,21 @@ class AssetPoint extends React.Component {
     } = this.props.assets;
 
     let modelList = null;
-    if (models) {
-      modelList = models.map((model, index) =>
+    if (asset && asset.models) {
+      modelList = asset.models.map((model, index) =>
         <option key={index} value={model.name.toLowerCase()}>{model.name}</option>
       )
     }
 
-    console.log(current.name)
-    const assetGauge = {gauge: gauge, assetName: current.name, assetKey: current.key}
+    const assetGauge = {gauge: point, assetName: asset.name, assetKey: asset.key}
+
+    // -- Set permissions visibility
+    const canUpdate = this.props.users.currentUser.permissions.find(permission => permission.tag === 'putAssets') || false;
+    const canDelete = this.props.users.currentUser.permissions.find(permission => permission.tag === 'deleteAssets') || false;
 
     return (
       <div className="m-3 form">
-        <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name: {gauge.name}</h3>
+        <h3 className="col bg-light rounded border-bottom border-primary p-2 mb-2">Gauge name: {point.name}</h3>
         <Row className="border rounded bg-light m-0 p-2">
           <Col sm={3} className="text-center p-2">
             <AssetDataPoint assetGauge={assetGauge} gaugePanelBackground="bg-primary" />
@@ -159,20 +188,20 @@ class AssetPoint extends React.Component {
                   type="text"
                   name="name"
                   id="name"
-                  value={gauge.name}
+                  value={point.name}
                   onChange={this.handleChange}
                 >
                 </Input>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="modelName" sm={12} className="font-weight-bold">Data Model</Label>
+              <Label for="model" sm={12} className="font-weight-bold">Data Model</Label>
               <Col sm={12}>
                 <Input
                   type="select"
-                  name="modelName"
-                  id="modelName"
-                  value={gauge.modelName}
+                  name="model"
+                  id="model"
+                  value={point.model}
                   onChange={this.handleChange}
                 >
                   <option value="n/a">None</option>
@@ -187,7 +216,7 @@ class AssetPoint extends React.Component {
                   type="select"
                   name="fieldName"
                   id="fieldName"
-                  value={gauge.fieldName}
+                  value={point.fieldName}
                   onChange={this.handleChange}
                 >
                   <option value="field-0">Field-0</option>
@@ -205,7 +234,7 @@ class AssetPoint extends React.Component {
                   type="text"
                   name="valueSuffix"
                   id="valueSuffix"
-                  value={gauge.valueSuffix}
+                  value={point.valueSuffix}
                   onChange={this.handleChange}
                 >
                 </Input>
@@ -214,14 +243,14 @@ class AssetPoint extends React.Component {
           </Col>
           <Col>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Min/Max Values</Label>
+              <Label for="minValue" sm={12} className="font-weight-bold">Min/Max Values</Label>
               <Col sm={12}>
                 <Row>
                   <Input
                     type="text"
                     name="minValue"
                     id="minValue"
-                    value={gauge.minValue}
+                    value={point.minValue}
                     onChange={this.handleChange}
                     className="col ml-3 mr-1"
                   >
@@ -230,7 +259,7 @@ class AssetPoint extends React.Component {
                     type="text"
                     name="maxValue"
                     id="maxValue"
-                    value={gauge.maxValue}
+                    value={point.maxValue}
                     onChange={this.handleChange}
                     className="col ml-1 mr-3"
                   >
@@ -239,14 +268,14 @@ class AssetPoint extends React.Component {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Alert Lower/Upper Value</Label>
+              <Label for="minAlert" sm={12} className="font-weight-bold">Alert Lower/Upper Value</Label>
               <Col sm={12}>
                 <Row>
                     <Input
                       type="text"
                       name="minAlert"
                       id="minAlert"
-                      value={gauge.minAlert}
+                      value={point.minAlert}
                       onChange={this.handleChange}
                       className="col ml-3 mr-1"
                     >
@@ -255,7 +284,7 @@ class AssetPoint extends React.Component {
                       type="text"
                       name="maxAlert"
                       id="maxAlert"
-                      value={gauge.maxAlert}
+                      value={point.maxAlert}
                       onChange={this.handleChange}
                       className="col ml-1 mr-3"
                     >
@@ -266,13 +295,13 @@ class AssetPoint extends React.Component {
           </Col>
           <Col>
             <FormGroup row>
-              <Label for="roleName" sm={12} className="font-weight-bold">Real-time Gauge</Label>
+              <Label for="gaugeType" sm={12} className="font-weight-bold">Real-time Gauge</Label>
               <Col sm={12}>
                 <Input
                   type="select"
                   name="gaugeType"
                   id="gaugeType"
-                  value={gauge.gaugeType}
+                  value={point.gaugeType}
                   onChange={this.handleChange}
                 >
                   <option value="dial">Dial</option>
@@ -296,13 +325,12 @@ class AssetPoint extends React.Component {
               </Col>
             </FormGroup>
           </Col>
-          <Col className="" sm="1">
-            <Button size="sm" color="success" className="w-100 m-1">Save</Button>
-            <Button size="sm" color="primary" className="w-100 m-1">Cancel</Button>
-            <Button size="sm" color="danger" className="w-100 m-1">Delete</Button>
-          </Col>
         </Row>
-
+        <div className="d-flex justify-content-center m-2">
+          { canUpdate && (<Button size="md" color="success" className="m-1" onClick={this.onSave}>Save</Button>)}
+          <Button size="md" color="primary" className="m-1" onClick={this.onCancel} >Cancel/Close</Button>
+          { canDelete && (<Button size="md" color="danger" className="m-1" onClick={this.onDelete}>Delete</Button>)}
+        </div>
       </div>
     );
   }
@@ -310,7 +338,8 @@ class AssetPoint extends React.Component {
 
 const mapStoreToProps = (store) => {
   return {
-    assets: store.assets
+    assets: store.assets,
+    users: store.users
   }
 }
 

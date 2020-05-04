@@ -3,16 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from "react-redux";
 import { 
   Table,
+  Card
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { fetchAssets } from '../../actions/assets'
+import { fetchAssets } from '../../actions/assets';
+import AssetPointsTable from './AssetPointsTable';
 
 class Assets extends Component {
-  constructor(props) {
-    super(props)
-
-  }
-
   componentDidMount() {
     this.props.dispatch(fetchAssets());
   }
@@ -27,6 +24,9 @@ class Assets extends Component {
       switch (header.field) {
         case 'models':
           cellValue = (header.field.length > 0 ? `${row[header.field].length} models` : '0 models' );
+          break;
+        case 'gauges':
+          cellValue = (header.field.length > 0 ? `${row[header.field].length} pts` : '0 pts' );
           break;
         default:
           cellValue = row[header.field]
@@ -67,6 +67,7 @@ class Assets extends Component {
       {caption: 'Name', field: 'name'},
       {caption: 'Key', field: 'key'},
       {caption: '# Model', field: 'models'},
+      {caption: '# Data Points', field: 'gauges'},
       {caption: 'Stream Type', field: 'sentenceType'},
     ]
 
@@ -80,11 +81,12 @@ class Assets extends Component {
         const link = `/asset/${asset._id}`
         return(
           <tr key={index} >
-          <td><FontAwesomeIcon icon={['fal', 'circle']} className={'text-success'} /></td>
-          {this.renderRows(headers, asset)}
-          <td>{ canEdit && (<Link to={link} ><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></Link>)}</td>
-          <td>{ canRemove && (<FontAwesomeIcon icon={['fal', 'trash']} className={'text-danger'} />)}</td>
-        </tr>
+            <td><FontAwesomeIcon icon={['fal', 'circle']} className={'text-success'} /></td>
+            {this.renderRows(headers, asset)}
+            <td>{ canRemove && (<FontAwesomeIcon icon={['fal', 'trash']} className={'text-danger'} />)}</td>
+            <td><Link to={link} ><FontAwesomeIcon icon={['fal', 'tachometer']} className={'text-warning'} /></Link></td>
+            <td>{ canEdit && (<Link to={link} ><FontAwesomeIcon icon={['fal', 'edit']} className={'text-primary'} /></Link>)}</td>
+          </tr>
         )
       });
     }
@@ -97,9 +99,9 @@ class Assets extends Component {
         </div>
         <div className="d-flex justify-content-end mt-0">
           <div>
-            <FontAwesomeIcon icon={['fal','layer-group']} className="m-2 text-primary" title="Manage Asset groups" />
-            <FontAwesomeIcon icon={['fal','plus']} className="m-2 text-primary" title="Add" />
-            <FontAwesomeIcon icon={['fal','filter']} className="m-2 text-primary" title="Filter" />
+            <FontAwesomeIcon icon={['fal','layer-group']} className="m-2 text-primary" title="Manage Asset groups" onClick={() => alert("Placeholder Only")} />
+            <FontAwesomeIcon icon={['fal','plus']} className="m-2 text-primary" title="Add" onClick={() => alert("Placeholder Only")} />
+            <FontAwesomeIcon icon={['fal','filter']} className="m-2 text-primary" title="Filter" onClick={() => alert("Placeholder Only")}  />
           </div>
         </div>
         <div className="rounded border p-2">
@@ -108,6 +110,7 @@ class Assets extends Component {
               <tr>
                 <th style={{width:10}}></th>
                 {tableHeadTh}
+                <th style={{width:30}}></th>
                 <th style={{width:10}}></th>
                 <th style={{width:10}}></th>
               </tr>
