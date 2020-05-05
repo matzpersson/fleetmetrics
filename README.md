@@ -6,10 +6,15 @@ The platform also includes a series of Python simulators that creates random MQT
 
 The FleetMetrics front-end is a single-tenant React website styled with Bootstrap and socketIO to listen to any metric changes on the Gateway api.
 
-FleetMetrics is provided as a open-source platform encouraging anyone to submit simulation code for their projects
+FleetMetrics is provided as a open-source platform encouraging anyone to submit PR's with site improvements and simulation code for their projects.
 
 ## Deployment
-We have included deployment options for AWS and Azure using Kubernetes and docker-compose options for local development with a series of Dockerfiles. We are currently working on our GitLab CI/CD pipeline scripts which we will make available soon.
+We have included deployment options for AWS and Azure using Kubernetes and docker-compose options for local development with a series of Dockerfiles. We are currently working on our GitLab CI/CD pipeline scripts which we will make available soon. 
+
+Instructions for launching applications in each application folder. The core framework include following applications with :
+* simulator - Python3 MQTT NMEA Simulator
+* server - NodeJS MQTT Broker, REST API and sockerIO broadcasts.
+* spa - React/Redux based front-end.
 
 ## Storage
 This project is using MongoDb as the storage engine as it deals quickly and nicely with large datasets.
