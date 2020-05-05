@@ -9,7 +9,7 @@ The FleetMetrics front-end is a single-tenant React website styled with Bootstra
 FleetMetrics is provided as a open-source platform encouraging anyone to submit PR's with site improvements and simulation code for their projects.
 
 ## Deployment
-We have included deployment options for AWS and Azure using Kubernetes and docker-compose options for local development with a series of Dockerfiles. We are currently working on our GitLab CI/CD pipeline scripts which we will make available soon. 
+We have included deployment options for Azure. We are currently working on the Kubernetes deployment scripts. Docker-compose options are available to deploy the whole framework locally with a series of Dockerfiles in each app directory. We are currently also working on our GitLab CI/CD pipeline scripts which we will make available soon. 
 
 Instructions for launching applications in each application folder. The core framework include following applications with :
 * simulator - Python3 MQTT NMEA Simulator
