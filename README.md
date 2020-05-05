@@ -1,6 +1,6 @@
 # Fleet Metrics
 
-FleetMetrics is a end-2-end data gathering tool typically collecting metrics from vessels, vehicles and field devices delivering compact sentences over MQTT protocol delivered to a central NodeJS micro service gateway. The NodeJS gateway features a MQTT broker service to receive field data, a REST Api for websites and mobiles to access and a socketIO interface for pushing metrics to listening websites and devices when changes are received from the field.
+FleetMetrics is a end-2-end data gathering framework typically collecting metrics from vessels, vehicles and field devices delivering compact sentences over MQTT protocol delivered to a central NodeJS micro service gateway. The NodeJS gateway features a MQTT broker service to receive field data, a REST Api for websites and mobiles to access and a socketIO interface for pushing metrics to listening websites and devices when changes are received from the field.
 
 The platform also includes a series of Python simulators that creates random MQTT sentences for protocols such as NMEA sentences delivered to the Gateway API to provide simulation for theoretical field devices in client demonstrations.
 
