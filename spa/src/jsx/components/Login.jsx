@@ -19,7 +19,7 @@ class Login extends React.Component {
 
     this.state = {
       login: {
-        email: 'matz@fleetmetrics.io',
+        email: 'demo@fleetmetrics.io',
         password: '12345'
       }
     };
